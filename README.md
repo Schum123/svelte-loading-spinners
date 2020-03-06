@@ -22,6 +22,23 @@ or
 </script>
 ```
 
+## List of avalible spinners
+
+```
+Circle
+Circle2
+Circle3
+DoubleBounce
+GoogleSpin
+ScaleOut
+SpinLine
+Stretch
+BarLoader
+Jumper
+RingLoader
+SyncLoader
+```
+
 ## Demo
 
 List of all spinner: [Demo](https://schum123.github.io/svelte-loading-spinners/)
