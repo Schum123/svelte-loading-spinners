@@ -14,7 +14,7 @@ or
 
 ```svelte
   <div id="app">
-    <Jumper></Jumper>
+    <Jumper size="60px"></Jumper>
   </div>
 
 <script>
