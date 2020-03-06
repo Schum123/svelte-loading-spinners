@@ -13,9 +13,7 @@ or
 ## Usage
 
 ```svelte
-  <div id="app">
-    <Jumper size="60px"></Jumper>
-  </div>
+<Jumper size="60px" color="#FF3E00"></Jumper>
 
 <script>
   import {Jumper} from 'svelte-loading-spinners'
