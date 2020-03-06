@@ -37,6 +37,7 @@ BarLoader
 Jumper
 RingLoader
 SyncLoader
+Rainbow
 ```
 
 ## Demo
