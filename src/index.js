@@ -10,6 +10,7 @@ import BarLoader from "./BarLoader.svelte";
 import Jumper from "./Jumper.svelte";
 import RingLoader from "./RingLoader.svelte";
 import SyncLoader from "./SyncLoader.svelte";
+import Rainbow from "./Rainbow.svelte";
 
 export {
   Circle,
@@ -23,5 +24,6 @@ export {
   BarLoader,
   Jumper,
   RingLoader,
-  SyncLoader
+  SyncLoader,
+  Rainbow
 };

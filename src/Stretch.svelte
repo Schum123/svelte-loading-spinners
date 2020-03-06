@@ -1,12 +1,12 @@
 <script>
-  export let size = "40px";
-  export let background = "#ff3e00";
+  export let size;
+  export let color;
   export let duration = "1.2s";
   $: rectStyles = [
-    `background-color: ${background}`,
+    `background-color: ${color}`,
     `animation-duration: ${duration}`
   ].join(";");
-  $: styles = [`width: ${size}`, `height: ${size}`].join(";");
+  $: styles = [`width: ${size}px`, `height: ${size}px`].join(";");
 </script>
 
 <div style="{styles}" class="spinner spinner--stretch">

@@ -1,5 +1,5 @@
 <script>
-	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader } from "svelte-loading-spinners";
+	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow } from "svelte-loading-spinners";
 	export let name;
   
   </script>
@@ -62,7 +62,7 @@
   <section>
   
 	<div class="spinner-item">
-		  <SpinLine size="60px"/>
+		  <SpinLine size="60" color="#FF3E00"/>
 		  <div class="spinner-title">SpinLine</div>
 	  </div>
    
@@ -71,15 +71,15 @@
 			  <div class="spinner-title">Circle2</div>
 	  </div>
 	  <div class="spinner-item">
-			  <DoubleBounce size="60px"/>
+			  <DoubleBounce size="60" color="#FF3E00"/>
 			  <div class="spinner-title">DoubleBounce</div>
 	  </div>
 	  <div class="spinner-item">
-			  <Circle size="60px"/>
+			  <Circle size="60" color="#FF3E00"/>
 			  <div class="spinner-title">Circle</div>
 	  </div>
 	  <div class="spinner-item">
-			  <Stretch size="60px"/>
+			  <Stretch size="60" color="#FF3E00"/>
 			  <div class="spinner-title">Stretch</div>
 	  </div>
 	  <div class="spinner-item">
@@ -87,15 +87,15 @@
 			  <div class="spinner-title">Circle3</div>
 	  </div>
 	  <div class="spinner-item">
-			  <BarLoader size="60px"/>
+			  <BarLoader size="60" color="#FF3E00"/>
 			  <div class="spinner-title">BarLoader</div>
 	  </div>
 	  <div class="spinner-item">
-			  <SyncLoader size="15px"/>
-			  <div class="spinner-title">Jumper</div>
+			  <SyncLoader size="15" color="#FF3E00"/>
+			  <div class="spinner-title">SyncLoader</div>
 	  </div>
 	  <div class="spinner-item">
-			  <Jumper size="60px"/>
+			  <Jumper size="60" color="#FF3E00"/>
 			  <div class="spinner-title">Jumper</div>
 	  </div>
 	  <div class="spinner-item">
@@ -103,12 +103,16 @@
 			  <div class="spinner-title">GoogleSpin</div>
 	  </div>
 	  <div class="spinner-item">
-			  <ScaleOut size="60px"/>
+			  <ScaleOut size="60" color="#FF3E00"/>
 			  <div class="spinner-title">ScaleOut</div>
 	  </div>
 	  <div class="spinner-item">
-			  <RingLoader size="60px"/>
+			  <RingLoader size="60" color="#FF3E00"/>
 		  <div class="spinner-title">RingLoader</div>
+		</div>
+		<div class="spinner-item">
+			  <Rainbow size="60" color="#FF3E00"/>
+		  <div class="spinner-title">Rainbow</div>
 	  </div>
   </section>
   

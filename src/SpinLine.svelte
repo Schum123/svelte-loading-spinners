@@ -1,15 +1,15 @@
 <script>
-  export let size = "40px";
-  export let color = "#ff3e00";
+  export let size;
+  export let color;
   export let stroke = "5px";
   $: lineStyles = [
-    `width: ${size}`,
+    `width: ${size}px`,
     `height: ${stroke}`,
     `background: ${color}`,
     `borderRadius:${stroke}`
   ].join(";");
   $: styles = [
-    `width: ${size}`,
+    `width: ${size}px`,
     `height: ${stroke}`,
     `transform: scale(${parseInt(size) / 75})`
   ].join(";");

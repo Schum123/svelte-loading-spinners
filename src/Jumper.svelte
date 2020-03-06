@@ -1,12 +1,14 @@
 <script>
-  export let size = "40px";
-  $: styles = [`width: ${size}`, `height: ${size}`].join(";");
+  export let size;
+  export let color;
+  $: styles = [`width: ${size}px`, `height: ${size}px`].join(";");
+  $: circles = [`background-color: ${color}`];
 </script>
 
 <div style="{styles}" class="spinner spinner--jumper">
-  <div></div>
-  <div></div>
-  <div></div>
+  <div style="{circles}"></div>
+  <div style="{circles}"></div>
+  <div style="{circles}"></div>
 </div>
 
 <style>
@@ -17,7 +19,6 @@
     box-sizing: border-box;
   }
   .spinner > div {
-    background-color: rgb(255, 62, 0);
     border-radius: 100%;
     animation-fill-mode: both;
     position: absolute;

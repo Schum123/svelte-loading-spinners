@@ -1,9 +1,9 @@
 <script>
-  export let size = "40px";
-  export let background = "#ff3e00";
-  $: styles = [`width: ${size}`, `height: ${size}`].join(";");
-  $: ringOne = [`border-color: ${background}`].join(";");
-  $: ringTwo = [`border-color: ${background}`].join(";");
+  export let size;
+  export let color;
+  $: styles = [`width: ${size}px`, `height: ${size}px`].join(";");
+  $: ringOne = [`border-color: ${color}`].join(";");
+  $: ringTwo = [`border-color: ${color}`].join(";");
 </script>
 
 <div style="{styles}" class="ringloader">
@@ -25,7 +25,6 @@
     perspective: 800px;
     border-width: 6px;
     border-style: solid;
-    border-color: rgb(54, 215, 183);
     border-image: initial;
     border-radius: 100%;
   }

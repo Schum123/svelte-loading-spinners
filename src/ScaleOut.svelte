@@ -1,11 +1,11 @@
 <script>
-  export let size = "40px";
-  export let background = "#ff3e00";
+  export let size;
+  export let color;
   export let duration = "1.0s";
   $: styles = [
-    `width: ${size}`,
-    `height: ${size}`,
-    `background-color: ${background}`,
+    `width: ${size}px`,
+    `height: ${size}px`,
+    `background-color: ${color}`,
     `animation-duration: ${duration}`
   ].join(";");
 </script>
