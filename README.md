@@ -24,6 +24,6 @@ or
 
 ## Demo
 
-List of all spinner: [Demo](Coming soon)
+List of all spinner: [Demo](https://schum123.github.io/svelte-loading-spinners/)
 
 ## Development Setup
