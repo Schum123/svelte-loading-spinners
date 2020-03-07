@@ -36,6 +36,7 @@ Jumper
 RingLoader
 SyncLoader
 Rainbow
+Wave
 ```
 
 ## Demo
