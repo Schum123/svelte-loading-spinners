@@ -1,5 +1,5 @@
 <script>
-	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow } from "svelte-loading-spinners";
+	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow } from "../../src/index";
 	export let name;
   
   </script>
@@ -87,11 +87,11 @@
 			  <div class="spinner-title">Circle3</div>
 	  </div>
 	  <div class="spinner-item">
-			  <BarLoader size="60" color="#FF3E00"/>
+			  <BarLoader size="100" color="#FF3E00"/>
 			  <div class="spinner-title">BarLoader</div>
 	  </div>
 	  <div class="spinner-item">
-			  <SyncLoader size="15" color="#FF3E00"/>
+			  <SyncLoader size="60" color="#FF3E00"/>
 			  <div class="spinner-title">SyncLoader</div>
 	  </div>
 	  <div class="spinner-item">

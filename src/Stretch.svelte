@@ -1,60 +1,39 @@
 <script>
+  import { css, keyframes } from "emotion";
+  import { range } from "./utils";
+
   export let size;
   export let color;
   export let duration = "1.2s";
-  $: rectStyles = [
-    `background-color: ${color}`,
-    `animation-duration: ${duration}`
-  ].join(";");
-  $: styles = [`width: ${size}px`, `height: ${size}px`].join(";");
-</script>
+  const stretch = keyframes`
+    0%,
+    40%,
+    100% {transform: scaleY(0.4);}
+    20% {transform: scaleY(1);}
+  `;
 
-<div style="{styles}" class="spinner spinner--stretch">
-  <div style="{rectStyles}" class="rect rect-1"></div>
-  <div style="{rectStyles}" class="rect rect-2"></div>
-  <div style="{rectStyles}" class="rect rect-3"></div>
-  <div style="{rectStyles}" class="rect rect-4"></div>
-  <div style="{rectStyles}" class="rect rect-5"></div>
-</div>
-
-<style>
-  .spinner {
+  const wrapper = css`
+    width: ${size}px;
+    height: ${size}px;
     display: inline-block;
     text-align: center;
     font-size: 10px;
-  }
-  * {
-    line-height: 0;
-    box-sizing: border-box;
-  }
-  .rect {
-    animation: sk-stretchdelay 1.2s ease-in-out infinite;
-  }
-  .spinner > div {
+  `;
+  const rect = css`
+    animation: ${stretch} ${duration} ease-in-out infinite;
+    background-color: ${color};
     height: 100%;
     width: 10%;
     display: inline-block;
-  }
-  .spinner .rect-2 {
-    animation-delay: -1.1s;
-  }
-  .spinner .rect-3 {
-    animation-delay: -1s;
-  }
-  .spinner .rect-4 {
-    animation-delay: -0.9s;
-  }
-  .spinner .rect-5 {
-    animation-delay: -0.8s;
-  }
-  @keyframes sk-stretchdelay {
-    0%,
-    40%,
-    100% {
-      transform: scaleY(0.4);
-    }
-    20% {
-      transform: scaleY(1);
-    }
-  }
-</style>
+    margin-right: 4px;
+  `;
+</script>
+
+<div class="{wrapper}">
+    {#each range(5, 1) as version}
+    <div 
+    class="{rect}"
+    style="animation-delay: {version === 2 ? '-1.1s' : version === 3 ? '-1s' : version === 4 ? '-0.9s' : version === 5 ? '-0.8s': ''}"
+    />
+    {/each}
+</div>
