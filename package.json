@@ -1,6 +1,6 @@
 {
   "name": "svelte-loading-spinners",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "svelte": "src/index.js",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
