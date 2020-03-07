@@ -11,6 +11,7 @@ import Jumper from "./Jumper.svelte";
 import RingLoader from "./RingLoader.svelte";
 import SyncLoader from "./SyncLoader.svelte";
 import Rainbow from "./Rainbow.svelte";
+import Wave from "./Wave.svelte";
 
 export {
   Circle,
@@ -25,5 +26,6 @@ export {
   Jumper,
   RingLoader,
   SyncLoader,
-  Rainbow
+  Rainbow,
+  Wave
 };
