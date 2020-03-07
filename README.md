@@ -37,6 +37,7 @@ RingLoader
 SyncLoader
 Rainbow
 Wave
+Firework
 ```
 
 ## Demo

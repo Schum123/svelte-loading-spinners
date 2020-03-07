@@ -12,6 +12,7 @@ import RingLoader from "./RingLoader.svelte";
 import SyncLoader from "./SyncLoader.svelte";
 import Rainbow from "./Rainbow.svelte";
 import Wave from "./Wave.svelte";
+import Firework from "./Firework.svelte";
 
 export {
   Circle,
@@ -27,5 +28,6 @@ export {
   RingLoader,
   SyncLoader,
   Rainbow,
-  Wave
+  Wave,
+  Firework
 };
