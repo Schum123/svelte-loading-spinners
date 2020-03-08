@@ -14,6 +14,7 @@ import Rainbow from "./Rainbow.svelte";
 import Wave from "./Wave.svelte";
 import Firework from "./Firework.svelte";
 import Pulse from "./Pulse.svelte";
+import Jellyfish from './Jellyfish.svelte'
 
 export {
   Circle,
@@ -31,5 +32,6 @@ export {
   Rainbow,
   Wave,
   Firework,
-  Pulse
+  Pulse,
+  Jellyfish
 };

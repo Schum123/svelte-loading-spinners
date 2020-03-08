@@ -39,6 +39,7 @@ Rainbow
 Wave
 Firework
 Pulse
+Jellyfish
 ```
 
 ## Demo
