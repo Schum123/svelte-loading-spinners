@@ -1,5 +1,5 @@
 <script>
-	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow, Wave, Firework } from "../../src/index";
+	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow, Wave, Firework, Pulse } from "../../src/index";
 	export let name;
   
   </script>
@@ -121,6 +121,10 @@
 		<div class="spinner-item">
 			  <Firework size="60" color="#FF3E00"/>
 		  <div class="spinner-title">Firework</div>
+		</div>
+		<div class="spinner-item">
+			  <Pulse size="60" color="#FF3E00"/>
+		  <div class="spinner-title">Pulse</div>
 	  </div>
   </section>
   

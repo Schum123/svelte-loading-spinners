@@ -13,6 +13,7 @@ import SyncLoader from "./SyncLoader.svelte";
 import Rainbow from "./Rainbow.svelte";
 import Wave from "./Wave.svelte";
 import Firework from "./Firework.svelte";
+import Pulse from "./Pulse.svelte";
 
 export {
   Circle,
@@ -29,5 +30,6 @@ export {
   SyncLoader,
   Rainbow,
   Wave,
-  Firework
+  Firework,
+  Pulse
 };

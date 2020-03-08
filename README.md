@@ -38,6 +38,7 @@ SyncLoader
 Rainbow
 Wave
 Firework
+Pulse
 ```
 
 ## Demo
