@@ -12,7 +12,7 @@
     height: ${size}px;
     width: ${size}px;
     border-color: ${color} transparent ${color} ${color};
-    border-width: ${size/5}px;
+    border-width: ${size/15}px;
     border-style: solid;
     border-image: initial;
     border-radius: 50%;
