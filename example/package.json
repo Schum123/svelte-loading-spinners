@@ -21,6 +21,6 @@
     "@emotion/styled": "^10.0.27",
     "emotion": "^10.0.5",
     "sirv-cli": "^0.4.4",
-    "svelte-loading-spinners": "^0.0.13"
+    "svelte-loading-spinners": "^0.0.14"
   }
 }
