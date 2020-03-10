@@ -1,5 +1,24 @@
 <script>
-	import { Circle, Circle2, Circle3, DoubleBounce, GoogleSpin, ScaleOut, SpinLine, Stretch, BarLoader, Jumper, RingLoader, SyncLoader, Rainbow, Wave, Firework, Pulse, Jellyfish } from "../../src/index";
+	import { 
+		Circle, 
+		Circle2, 
+		Circle3, 
+		DoubleBounce, 
+		GoogleSpin, 
+		ScaleOut, 
+		SpinLine, 
+		Stretch, 
+		BarLoader, 
+		Jumper, 
+		RingLoader, 
+		SyncLoader, 
+		Rainbow, 
+		Wave, 
+		Firework, 
+		Pulse, 
+		Jellyfish,
+		Chasing
+	} from "../../src/index";
 	export let name;
   
   </script>
@@ -19,10 +38,11 @@
 	  text-align: center;
 	}
 	section {
-	  display: grid;
-	  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-	  align-items: center;
-	  justify-items: center;
+	align-items: center;
+	justify-items: center;
+	display: grid;
+	grid-gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	}
 	.spinner-item {
 	  min-width: 250px;
@@ -87,7 +107,7 @@
 			  <div class="spinner-title">Circle3</div>
 	  </div>
 	  <div class="spinner-item">
-			  <BarLoader size="100" color="#FF3E00"/>
+			  <BarLoader size="60" color="#FF3E00"/>
 			  <div class="spinner-title">BarLoader</div>
 	  </div>
 	  <div class="spinner-item">
@@ -130,5 +150,10 @@
 			<Jellyfish size="60" color="#FF3E00"/>
 			<div class="spinner-title">Jellyfish</div>
 		</div>
+		<div class="spinner-item">
+			<Chasing size="60" color="#FF3E00"/>
+			<div class="spinner-title">Chasing</div>
+		</div>
   </section>
+  
   
