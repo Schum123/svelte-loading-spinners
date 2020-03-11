@@ -16,6 +16,7 @@ import Firework from "./Firework.svelte";
 import Pulse from "./Pulse.svelte";
 import Jellyfish from './Jellyfish.svelte';
 import Chasing from './Chasing.svelte';
+import Shadow from './Shadow.svelte';
 
 export {
   Circle,
@@ -35,5 +36,6 @@ export {
   Firework,
   Pulse,
   Jellyfish,
-  Chasing
+  Chasing,
+  Shadow
 };

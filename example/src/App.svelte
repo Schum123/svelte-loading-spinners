@@ -17,7 +17,8 @@
 		Firework, 
 		Pulse, 
 		Jellyfish,
-		Chasing
+		Chasing,
+		Shadow
 	} from "../../src/index";
 	export let name;
   
@@ -153,6 +154,10 @@
 		<div class="spinner-item">
 			<Chasing size="60" color="#FF3E00"/>
 			<div class="spinner-title">Chasing</div>
+		</div>
+		<div class="spinner-item">
+			<Shadow size="60" color="#FF3E00"/>
+			<div class="spinner-title">Shadow</div>
 		</div>
   </section>
   

@@ -40,7 +40,8 @@ Wave
 Firework
 Pulse
 Jellyfish,
-Chasing
+Chasing,
+Shadow
 ```
 
 ## Demo
