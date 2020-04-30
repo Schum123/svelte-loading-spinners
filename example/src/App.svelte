@@ -96,7 +96,7 @@
 			  <div class="spinner-title">DoubleBounce</div>
 	  </div>
 	  <div class="spinner-item">
-			  <Circle size="60" color="#FF3E00"/>
+			  <Circle size="60" color="#FF3E00" unit="px"/>
 			  <div class="spinner-title">Circle</div>
 	  </div>
 	  <div class="spinner-item">
@@ -108,7 +108,7 @@
 			  <div class="spinner-title">Circle3</div>
 	  </div>
 	  <div class="spinner-item">
-			  <BarLoader size="60" color="#FF3E00"/>
+			  <BarLoader size="60" color="#FF3E00" unit="px" />
 			  <div class="spinner-title">BarLoader</div>
 	  </div>
 	  <div class="spinner-item">
@@ -152,7 +152,7 @@
 			<div class="spinner-title">Jellyfish</div>
 		</div>
 		<div class="spinner-item">
-			<Chasing size="60" color="#FF3E00"/>
+			<Chasing size="60" color="#FF3E00" unit="px"/>
 			<div class="spinner-title">Chasing</div>
 		</div>
 		<div class="spinner-item">

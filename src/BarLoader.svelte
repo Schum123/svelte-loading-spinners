@@ -1,8 +1,9 @@
 <script>
   import { css, keyframes } from "emotion";
   import { calculateRgba, range  } from './utils'
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = 'px';
 
 const long = keyframes`
   0% {left: -35%;right: 100%}
@@ -16,8 +17,8 @@ const short = keyframes`
   100% {left: 107%;right: -8%}
 `
 export const wrapper = css`
-  height: ${size/15}px;
-  width: ${size*2}px;
+  height: ${size/15+unit};
+  width: ${size*2+unit};
   background-color: ${calculateRgba(color, 0.2)};
   position: relative;
   overflow: hidden;
@@ -25,7 +26,7 @@ export const wrapper = css`
 `;
 
 export const lines = css`
-  height: ${size/15}px;
+  height: ${size/15+unit};
   background-color: ${color};
 `;
 export const smallLines = css`

@@ -1,8 +1,9 @@
 <script>
   import { css, keyframes } from "emotion";
   import { range } from "./utils";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = 'px';
 
   const ringOne = keyframes`
     0% {transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);}
@@ -14,16 +15,16 @@
 `;
   const wrapper = css`
     position: relative;
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
   `;
   const border = css`
     border-color: ${color};
     position: absolute;
     top: 0px;
     left: 0px;
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     opacity: 0.4;
     perspective: 800px;
     border-width: 6px;

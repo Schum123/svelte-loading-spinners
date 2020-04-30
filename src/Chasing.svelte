@@ -1,8 +1,9 @@
 <script>
   import { css, keyframes } from "emotion";
   import { calculateRgba, range } from "./utils";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = "#FF3E00";
+  export let unit = 'px';
 
   const rotate = keyframes`
     100% { transform: rotate(360deg);}
@@ -15,16 +16,16 @@
   `;
 
   const wrapper = css`
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     display: flex;
     justify-content: center;
     align-items: center;
   `;
 
   const spinner = css`
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     animation: ${rotate} 2s infinite linear;
   `;
 

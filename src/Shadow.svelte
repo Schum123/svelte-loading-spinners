@@ -1,7 +1,8 @@
 <script>
   import { css, keyframes } from "emotion";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = 'px';
 
   const load = keyframes`
     0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
@@ -24,15 +25,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
   `;
   const shadow = css`
     color: ${color};
     font-size: 60px;
     overflow: hidden;
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     border-radius: 50%;
     margin: 28px auto;
     position: relative;

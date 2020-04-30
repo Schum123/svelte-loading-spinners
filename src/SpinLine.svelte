@@ -1,9 +1,10 @@
 <script>
   import { css, keyframes } from "emotion";
 
-  export let size;
-  export let color;
-  export let stroke = "5px";
+  export let size = 60;
+  export let color = "#FF3E00";
+  export let unit = "px";
+  export let stroke = parseInt(size / 12) + unit;
 
   const spineLine = keyframes`
     0% {transform: rotate(-20deg);height: 5px;width: 75px;}
@@ -21,7 +22,7 @@
   `;
 
   const wrapper = css`
-    width: ${size}px;
+    width: ${size + unit};
     height: ${stroke};
     transform: scale(${parseInt(size) / 75});
     display: flex;
@@ -29,7 +30,7 @@
     align-items: center;
   `;
   const line = css`
-    width: ${size}px;
+    width: ${size + unit};
     height: ${stroke};
     background: ${color};
     border-radius: ${stroke};

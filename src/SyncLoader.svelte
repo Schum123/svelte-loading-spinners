@@ -1,8 +1,9 @@
 <script>
     import { css, keyframes } from "emotion";
     import { range } from "./utils";
-    export let size;
-    export let color;
+    export let size = 60;
+    export let color = '#FF3E00';
+    export let unit = "px"
 
     const sync = keyframes`
       33% {transform: translateY(10px);}
@@ -10,15 +11,15 @@
       100% {transform: translateY(0);}
     `;
     const wrapper = css`
-      height: ${size}px;
-      width: ${size}px;
+      height: ${size+unit};
+      width: ${size+unit};
       display: flex;
       align-items: center;
       justify-content: center;
     `;
     const balls = css`
-      height: ${size/4}px;
-      width: ${size/4}px;
+      height: ${size/4+unit};
+      width: ${size/4+unit};
       background-color: ${color};
       margin: 1px;
       display: inline-block;

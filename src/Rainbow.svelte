@@ -1,7 +1,8 @@
 <script>
   import { css, keyframes } from "emotion";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = "px";
 
   const rotate = keyframes`
     0% {border-width: 10px; }
@@ -12,13 +13,13 @@
   `;
 
   const wrapper = css`
-    width: ${size}px;
-    height: ${size / 2}px;
+    width: ${size+unit};
+    height: ${size / 2+unit};
     overflow: hidden;
   `;
   const rainbow = css`
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     border-left-color: transparent;
     border-bottom-color: transparent;
     border-top-color: ${color};

@@ -2,9 +2,10 @@
   import { css, keyframes } from "emotion";
   import { range } from "./utils";
 
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
   export let duration = "1.2s";
+  export let unit = 'px'
   const stretch = keyframes`
     0%,
     40%,
@@ -13,8 +14,8 @@
   `;
 
   const wrapper = css`
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     display: inline-block;
     text-align: center;
     font-size: 10px;

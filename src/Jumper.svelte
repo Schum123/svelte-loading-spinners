@@ -1,8 +1,9 @@
 <script>
   import { css, keyframes } from "emotion";
   import { range } from "./utils";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = 'px';
 
   const bounce = keyframes`
   0% {opacity: 0;transform: scale(0);}
@@ -10,8 +11,8 @@
   100% {opacity: 0;}
 `;
   const wrapper = css`
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
   `;
 
   const circle = css`
@@ -19,8 +20,8 @@
     animation-fill-mode: both;
     position: absolute;
     opacity: 0;
-    width: ${size}px;
-    height: ${size}px;
+    width: ${size+unit};
+    height: ${size+unit};
     animation: ${bounce} 1s linear infinite;
     background-color: ${color};
   `;

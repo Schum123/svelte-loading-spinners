@@ -1,7 +1,8 @@
 <script>
   import { css, keyframes } from "emotion";
-  export let size;
-  export let color;
+  export let size = 60;
+  export let color = '#FF3E00';
+  export let unit = "px"
 
   const rotate = keyframes`
   0% {transform: rotate(0)}
@@ -9,10 +10,10 @@
 `;
 
   export const circle = css`
-    height: ${size}px;
-    width: ${size}px;
+    height: ${size+unit};
+    width: ${size+unit};
     border-color: ${color} transparent ${color} ${color};
-    border-width: ${size/15}px;
+    border-width: ${size/15+unit};
     border-style: solid;
     border-image: initial;
     border-radius: 50%;

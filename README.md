@@ -10,39 +10,45 @@ npm i svelte-loading-spinners
 
 or
 
+```bash
+yarn add svelte-loading-spinners
+```
+
 ## Usage
 
 ```svelte
-<Jumper size="60" color="#FF3E00"></Jumper>
+<Jumper size="60" color="#FF3E00" unit="px"></Jumper>
 
 <script>
-  import {Jumper} from 'svelte-loading-spinners'
+  import { Jumper } from 'svelte-loading-spinners'
 </script>
 ```
 
 ## List of avalible spinners
 
-```
-Circle
-Circle2
-Circle3
-DoubleBounce
-GoogleSpin
-ScaleOut
-SpinLine
-Stretch
-BarLoader
-Jumper
-RingLoader
-SyncLoader
-Rainbow
-Wave
-Firework
-Pulse
-Jellyfish,
-Chasing,
-Shadow
-```
+Props: `size`, `color`, and `unit`. 
+The default props; `unit` is `px`, `color` is `#FF3E00` and `size` `60px`.
+
+|      Loaders |
+| -----------: |
+|    BarLoader |
+|      Chasing |
+|       Circle |
+|      Circle2 |
+|      Circle3 |
+| DoubleBounce |
+|     Firework |
+|    Jellyfish |
+|       Jumper |
+|        Pulse |
+|      Rainbow |
+|   RingLoader |
+|     ScaleOut |
+|       Shadow |
+|     SpinLine |
+|      Stretch |
+|   SyncLoader |
+|         Wave |
 
 ## Demo
 
