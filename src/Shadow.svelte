@@ -30,7 +30,7 @@
   `;
   const shadow = css`
     color: ${color};
-    font-size: 60px;
+    font-size: ${size+unit};
     overflow: hidden;
     width: ${size+unit};
     height: ${size+unit};
