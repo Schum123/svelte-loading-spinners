@@ -1,85 +1,14 @@
 <script>
-  export let size = "40px";
-  $: styles = [`width: ${size}`, `height: ${size}`].join(";");
-  $: innerStyles = [
-    `transform: 'scale(' + (${parseInt(size) / 44}) + ')'`
-  ].join(";");
-</script>
+  import { css, keyframes } from "emotion";
+  export let size = 60;
+  export let unit = "px";
+  export let ballTopLeft = "#FF3E00";
+  export let ballTopRight = "#F8B334";
+  export let ballBottomLeft = "#40B3FF";
+  export let ballBottomRight = "#676778";
 
-<div style="{styles}" class="spinner spinner--circle-8">
-  <div style="{innerStyles}" class="spinner-inner">
-    <div class="ball-container">
-      <div class="contener_mixte">
-        <div class="ballcolor ball_1">&nbsp;</div>
-      </div>
-      <div class="contener_mixte">
-        <div class="ballcolor ball_2">&nbsp;</div>
-      </div>
-      <div class="contener_mixte">
-        <div class="ballcolor ball_3">&nbsp;</div>
-      </div>
-      <div class="contener_mixte">
-        <div class="ballcolor ball_4">&nbsp;</div>
-      </div>
-    </div>
-  </div>
-</div>
-<style>
-  .spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  * {
-    line-height: 0;
-    box-sizing: border-box;
-  }
-  .ball-container {
-    animation: animball_two 1.5s infinite;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .contener_mixte {
-    width: 44px;
-    height: 44px;
-    position: absolute;
-  }
-  .ballcolor {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-  }
-  .ball_1,
-  .ball_2,
-  .ball_3,
-  .ball_4 {
-    position: absolute;
-    animation: animball_one 1.5s infinite ease;
-  }
-  .ball_1 {
-    background-color: #ff3e00;
-    top: 0;
-    left: 0;
-  }
-  .ball_2 {
-    background-color: #f8b334;
-    top: 0;
-    left: 24px;
-  }
-  .ball_3 {
-    background-color: #40b3ff;
-    top: 24px;
-    left: 0;
-  }
-  .ball_4 {
-    background-color: #676778;
-    top: 24px;
-    left: 24px;
-  }
-  @keyframes animball_one {
-    0% {
+  const ballOne = keyframes`
+  0% {
       position: absolute;
     }
     50% {
@@ -91,9 +20,9 @@
     100% {
       position: absolute;
     }
-  }
-  @keyframes animball_two {
-    0% {
+  `;
+  const ballTwo = keyframes`
+  0% {
       transform: rotate(0deg) scale(1);
     }
     50% {
@@ -102,5 +31,75 @@
     100% {
       transform: rotate(720deg) scale(1);
     }
-  }
-</style>
+  `;
+  const wrapper = css`
+    width: ${size + unit};
+    height: ${size + unit};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    box-sizing: border-box;
+  `;
+  const inner = css`
+    transform: scale(${parseInt(size) / 52});
+  `;
+  const ballContainer = css`
+    animation: ${ballTwo} 1.5s infinite;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    position: relative;
+  `;
+  const singleBall = css`
+    width: 44px;
+    height: 44px;
+    position: absolute;
+  `;
+  const ball = css`
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    animation: ${ballOne} 1.5s infinite ease;
+  `;
+  const ballTL = css`
+    background-color: ${ballTopLeft};
+    top: 0;
+    left: 0;
+  `;
+  const ballTR = css`
+    background-color: ${ballTopRight};
+    top: 0;
+    left: 24px;
+  `;
+  const ballBL = css`
+    background-color: ${ballBottomLeft};
+    top: 24px;
+    left: 0;
+  `;
+  const ballBR = css`
+    background-color: ${ballBottomRight};
+    top: 24px;
+    left: 24px;
+  `;
+</script>
+
+<div class="{wrapper}">
+  <div class="{inner}">
+    <div class="{ballContainer}">
+      <div class="{singleBall}">
+        <div class="{ball} {ballTL}">&nbsp;</div>
+      </div>
+      <div class="contener_mixte">
+        <div class="{ball} {ballTR}">&nbsp;</div>
+      </div>
+      <div class="contener_mixte">
+        <div class="{ball} {ballBL}">&nbsp;</div>
+      </div>
+      <div class="contener_mixte">
+        <div class="{ball} {ballBR}">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+</div>

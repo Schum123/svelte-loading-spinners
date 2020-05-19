@@ -88,7 +88,7 @@
 	  </div>
    
 	  <div class="spinner-item">
-			  <Circle2 size="60px"/>
+			  <Circle2 size="60" unit="px" colorOuter="#FF3E00" colorCenter="#40B3FF" colorInner="#676778"/>
 			  <div class="spinner-title">Circle2</div>
 	  </div>
 	  <div class="spinner-item">
@@ -104,7 +104,7 @@
 			  <div class="spinner-title">Stretch</div>
 	  </div>
 	  <div class="spinner-item">
-			  <Circle3 size="60px"/>
+			  <Circle3 size="60" unit="px" ballTopLeft="#FF3E00" ballTopRight="#F8B334" ballBottomLeft="#40B3FF" ballBottomRight="#676778"/>
 			  <div class="spinner-title">Circle3</div>
 	  </div>
 	  <div class="spinner-item">
