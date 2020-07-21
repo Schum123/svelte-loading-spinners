@@ -3275,28 +3275,28 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[4] = list[i];
     	return child_ctx;
     }
 
-    // (34:4) {#each range(5, 1) as version}
+    // (42:2) {#each range(5, 1) as version}
     function create_each_block$1(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", /*rect*/ ctx[1]);
+    			attr_dev(div, "class", "rect svelte-w0x6cj");
 
-    			set_style(div, "animation-delay", /*version*/ ctx[7] === 2
+    			set_style(div, "animation-delay", /*version*/ ctx[4] === 2
     			? "-1.1s"
-    			: /*version*/ ctx[7] === 3
+    			: /*version*/ ctx[4] === 3
     				? "-1s"
-    				: /*version*/ ctx[7] === 4
+    				: /*version*/ ctx[4] === 4
     					? "-0.9s"
-    					: /*version*/ ctx[7] === 5 ? "-0.8s" : "");
+    					: /*version*/ ctx[4] === 5 ? "-0.8s" : "");
 
-    			add_location(div, file$7, 34, 4, 781);
+    			add_location(div, file$7, 42, 2, 831);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3311,7 +3311,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(34:4) {#each range(5, 1) as version}",
+    		source: "(42:2) {#each range(5, 1) as version}",
     		ctx
     	});
 
@@ -3336,8 +3336,11 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", /*wrapper*/ ctx[0]);
-    			add_location(div, file$7, 32, 0, 716);
+    			attr_dev(div, "class", "wrapper svelte-w0x6cj");
+    			set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[3]);
+    			set_style(div, "--color", /*color*/ ctx[1]);
+    			set_style(div, "--duration", /*duration*/ ctx[2]);
+    			add_location(div, file$7, 37, 0, 693);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3350,7 +3353,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*rect, range*/ 2) {
+    			if (dirty & /*range*/ 0) {
     				each_value = range(5, 1);
     				validate_each_argument(each_value);
     				let i;
@@ -3372,6 +3375,18 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 9) {
+    				set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[3]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div, "--color", /*color*/ ctx[1]);
+    			}
+
+    			if (dirty & /*duration*/ 4) {
+    				set_style(div, "--duration", /*duration*/ ctx[2]);
     			}
     		},
     		i: noop,
@@ -3398,31 +3413,6 @@ var app = (function () {
     	let { color = "#FF3E00" } = $$props;
     	let { duration = "1.2s" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const stretch = keyframes`
-    0%,
-    40%,
-    100% {transform: scaleY(0.4);}
-    20% {transform: scaleY(1);}
-  `;
-
-    	const wrapper = css`
-    width: ${size + unit};
-    height: ${size + unit};
-    display: inline-block;
-    text-align: center;
-    font-size: 10px;
-  `;
-
-    	const rect = css`
-    animation: ${stretch} ${duration} ease-in-out infinite;
-    background-color: ${color};
-    height: 100%;
-    width: 10%;
-    display: inline-block;
-    margin-right: 4px;
-  `;
-
     	const writable_props = ["size", "color", "duration", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -3433,43 +3423,32 @@ var app = (function () {
     	validate_slots("Stretch", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(3, color = $$props.color);
-    		if ("duration" in $$props) $$invalidate(4, duration = $$props.duration);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ("unit" in $$props) $$invalidate(3, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		range,
-    		size,
-    		color,
-    		duration,
-    		unit,
-    		stretch,
-    		wrapper,
-    		rect
-    	});
+    	$$self.$capture_state = () => ({ range, size, color, duration, unit });
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(3, color = $$props.color);
-    		if ("duration" in $$props) $$invalidate(4, duration = $$props.duration);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ("unit" in $$props) $$invalidate(3, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [wrapper, rect, size, color, duration, unit];
+    	return [size, color, duration, unit];
     }
 
     class Stretch extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { size: 2, color: 3, duration: 4, unit: 5 });
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { size: 0, color: 1, duration: 2, unit: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3517,11 +3496,11 @@ var app = (function () {
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
+    	child_ctx[4] = list[i];
     	return child_ctx;
     }
 
-    // (44:6) {#each range(2, 1) as version}
+    // (72:2) {#each range(2, 1) as version}
     function create_each_block$2(ctx) {
     	let div;
     	let div_class_value;
@@ -3529,20 +3508,18 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", div_class_value = "" + (/*lines*/ ctx[1] + " " + /*smallLines*/ ctx[2]));
-
-    			set_style(div, "animation", (/*version*/ ctx[8] === 1
-    			? /*long*/ ctx[3]
-    			: /*short*/ ctx[4]) + " 2.1s " + (/*version*/ ctx[8] === 2 ? `1.15s` : ``) + " " + (/*version*/ ctx[8] === 1
-    			? `cubic-bezier(0.65, 0.815, 0.735, 0.395)`
-    			: `cubic-bezier(0.165, 0.84, 0.44, 1)`) + " infinite");
-
-    			add_location(div, file$8, 44, 6, 1056);
+    			attr_dev(div, "class", div_class_value = "lines small-lines " + /*version*/ ctx[4] + " svelte-1k7sh9c");
+    			set_style(div, "--color", /*color*/ ctx[1]);
+    			add_location(div, file$8, 72, 2, 1507);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*color*/ 2) {
+    				set_style(div, "--color", /*color*/ ctx[1]);
+    			}
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     		}
@@ -3552,7 +3529,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(44:6) {#each range(2, 1) as version}",
+    		source: "(72:2) {#each range(2, 1) as version}",
     		ctx
     	});
 
@@ -3577,8 +3554,10 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", /*wrapper*/ ctx[0]);
-    			add_location(div, file$8, 42, 2, 987);
+    			attr_dev(div, "class", "wrapper svelte-1k7sh9c");
+    			set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			set_style(div, "--rgba", /*rgba*/ ctx[3]);
+    			add_location(div, file$8, 70, 0, 1404);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3591,7 +3570,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*lines, smallLines, range, long, short*/ 30) {
+    			if (dirty & /*range, color*/ 2) {
     				each_value = range(2, 1);
     				validate_each_argument(each_value);
     				let i;
@@ -3613,6 +3592,10 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
     			}
     		},
     		i: noop,
@@ -3638,43 +3621,7 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const long = keyframes`
-  0% {left: -35%;right: 100%}
-  60% {left: 100%;right: -90%}
-  100% {left: 100%;right: -90%}
-`;
-
-    	const short = keyframes`
-  0% {left: -200%;right: 100%}
-  60% {left: 107%;right: -8%}
-  100% {left: 107%;right: -8%}
-`;
-
-    	const wrapper = css`
-  height: ${size / 15 + unit};
-  width: ${size * 2 + unit};
-  background-color: ${calculateRgba(color, 0.2)};
-  position: relative;
-  overflow: hidden;
-  background-clip: padding-box;
-`;
-
-    	const lines = css`
-  height: ${size / 15 + unit};
-  background-color: ${color};
-`;
-
-    	const smallLines = css`
-  position: absolute;
-  overflow: hidden;
-  background-clip: padding-box;
-  display: block;
-  border-radius: 2px;
-  will-change: left, right;
-  animation-fill-mode: forwards;
-`;
-
+    	let rgba = calculateRgba(color, 0.2);
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -3685,51 +3632,38 @@ var app = (function () {
     	validate_slots("BarLoader", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("size" in $$props) $$invalidate(5, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(6, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(7, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
     		calculateRgba,
     		range,
     		size,
     		color,
     		unit,
-    		long,
-    		short,
-    		wrapper,
-    		lines,
-    		smallLines
+    		rgba
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(5, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(6, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(7, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
+    		if ("rgba" in $$props) $$invalidate(3, rgba = $$props.rgba);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [wrapper, lines, smallLines, long, short, size, color, unit];
+    	return [size, color, unit, rgba];
     }
 
     class BarLoader extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-
-    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {
-    			size: 5,
-    			color: 6,
-    			unit: 7,
-    			wrapper: 0,
-    			lines: 1,
-    			smallLines: 2
-    		});
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3760,30 +3694,6 @@ var app = (function () {
     	}
 
     	set unit(value) {
-    		throw new Error("<BarLoader>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get wrapper() {
-    		return this.$$.ctx[0];
-    	}
-
-    	set wrapper(value) {
-    		throw new Error("<BarLoader>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get lines() {
-    		return this.$$.ctx[1];
-    	}
-
-    	set lines(value) {
-    		throw new Error("<BarLoader>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get smallLines() {
-    		return this.$$.ctx[2];
-    	}
-
-    	set smallLines(value) {
     		throw new Error("<BarLoader>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -4255,31 +4165,35 @@ var app = (function () {
 
     function get_each_context$5(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (30:6) {#each range(3, 1) as version}
+    // (95:2) {#each range(3, 1) as i}
     function create_each_block$5(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", /*balls*/ ctx[2]);
-
-    			set_style(div, "animation", "0.6s ease-in-out " + (/*version*/ ctx[6] === 1
-    			? "0.07s"
-    			: /*version*/ ctx[6] === 2
-    				? "0.14s"
-    				: /*version*/ ctx[6] === 3 ? "0.21s" : "") + " infinite normal both running " + /*sync*/ ctx[0]);
-
-    			add_location(div, file$b, 30, 6, 812);
+    			attr_dev(div, "class", "dot svelte-1r1543b");
+    			set_style(div, "--dotSize", /*size*/ ctx[0] * 0.25 + /*unit*/ ctx[2]);
+    			set_style(div, "--color", /*color*/ ctx[1]);
+    			set_style(div, "animation-delay", /*i*/ ctx[3] * 0.07 + "s");
+    			add_location(div, file$b, 95, 2, 2341);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--dotSize", /*size*/ ctx[0] * 0.25 + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div, "--color", /*color*/ ctx[1]);
+    			}
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     		}
@@ -4289,7 +4203,7 @@ var app = (function () {
     		block,
     		id: create_each_block$5.name,
     		type: "each",
-    		source: "(30:6) {#each range(3, 1) as version}",
+    		source: "(95:2) {#each range(3, 1) as i}",
     		ctx
     	});
 
@@ -4314,8 +4228,9 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", /*wrapper*/ ctx[1]);
-    			add_location(div, file$b, 28, 2, 743);
+    			attr_dev(div, "class", "wrapper svelte-1r1543b");
+    			set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			add_location(div, file$b, 93, 0, 2260);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4328,7 +4243,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*balls, range, sync*/ 5) {
+    			if (dirty & /*size, unit, color, range*/ 7) {
     				each_value = range(3, 1);
     				validate_each_argument(each_value);
     				let i;
@@ -4350,6 +4265,10 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
     			}
     		},
     		i: noop,
@@ -4375,30 +4294,6 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const sync = keyframes`
-      33% {transform: translateY(10px);}
-      66% {transform: translateY(-10px);}
-      100% {transform: translateY(0);}
-    `;
-
-    	const wrapper = css`
-      height: ${size + unit};
-      width: ${size + unit};
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-
-    	const balls = css`
-      height: ${size / 4 + unit};
-      width: ${size / 4 + unit};
-      background-color: ${color};
-      margin: 1px;
-      display: inline-block;
-      border-radius: 100%;
-    `;
-
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -4409,40 +4304,30 @@ var app = (function () {
     	validate_slots("SyncLoader", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		range,
-    		size,
-    		color,
-    		unit,
-    		sync,
-    		wrapper,
-    		balls
-    	});
+    	$$self.$capture_state = () => ({ range, size, color, unit });
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [sync, wrapper, balls, size, color, unit];
+    	return [size, color, unit];
     }
 
     class SyncLoader extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$b, create_fragment$b, safe_not_equal, { size: 3, color: 4, unit: 5 });
+    		init(this, options, instance$b, create_fragment$b, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -4478,6 +4363,7 @@ var app = (function () {
     }
 
     /* C:\Users\Alexander\Documents\projects\svelte-loading-spinners\src\Rainbow.svelte generated by Svelte v3.19.2 */
+
     const file$c = "C:\\Users\\Alexander\\Documents\\projects\\svelte-loading-spinners\\src\\Rainbow.svelte";
 
     function create_fragment$c(ctx) {
@@ -4488,10 +4374,12 @@ var app = (function () {
     		c: function create() {
     			div1 = element("div");
     			div0 = element("div");
-    			attr_dev(div0, "class", /*rainbow*/ ctx[1]);
-    			add_location(div0, file$c, 35, 2, 924);
-    			attr_dev(div1, "class", /*wrapper*/ ctx[0]);
-    			add_location(div1, file$c, 34, 0, 897);
+    			attr_dev(div0, "class", "rainbow svelte-69jr3g");
+    			add_location(div0, file$c, 46, 2, 995);
+    			attr_dev(div1, "class", "wrapper svelte-69jr3g");
+    			set_style(div1, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			set_style(div1, "--color", /*color*/ ctx[1]);
+    			add_location(div1, file$c, 45, 0, 923);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4500,7 +4388,15 @@ var app = (function () {
     			insert_dev(target, div1, anchor);
     			append_dev(div1, div0);
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div1, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div1, "--color", /*color*/ ctx[1]);
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
@@ -4523,35 +4419,6 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const rotate = keyframes`
-    0% {border-width: 10px; }
-    25% {border-width: 3px; }
-    50% {transform: rotate(115deg);border-width: 10px;}
-    75% {border-width: 3px;}
-    100% {border-width: 10px;}
-  `;
-
-    	const wrapper = css`
-    width: ${size + unit};
-    height: ${size / 2 + unit};
-    overflow: hidden;
-  `;
-
-    	const rainbow = css`
-    width: ${size + unit};
-    height: ${size + unit};
-    border-left-color: transparent;
-    border-bottom-color: transparent;
-    border-top-color: ${color};
-    border-right-color: ${color};
-    box-sizing: border-box;
-    transform: rotate(-200deg);
-    border-radius: 50%;
-    border-style: solid;
-    animation: 3s ease-in-out 0s infinite normal none running ${rotate};
-  `;
-
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -4562,39 +4429,30 @@ var app = (function () {
     	validate_slots("Rainbow", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(3, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(4, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		size,
-    		color,
-    		unit,
-    		rotate,
-    		wrapper,
-    		rainbow
-    	});
+    	$$self.$capture_state = () => ({ size, color, unit });
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(3, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(4, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [wrapper, rainbow, size, color, unit];
+    	return [size, color, unit];
     }
 
     class Rainbow extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$c, create_fragment$c, safe_not_equal, { size: 2, color: 3, unit: 4 });
+    		init(this, options, instance$c, create_fragment$c, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -5013,28 +4871,28 @@ var app = (function () {
 
     function get_each_context$7(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (36:4) {#each range(3, 0) as version}
+    // (39:2) {#each range(3, 0) as version}
     function create_each_block$7(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", /*cube*/ ctx[3]);
-    			set_style(div, "animation-delay", /*version*/ ctx[6] * 0.15 + "s");
-    			set_style(div, "left", /*version*/ ctx[6] * (/*size*/ ctx[0] / 3 + /*size*/ ctx[0] / 15) + /*unit*/ ctx[1]);
-    			add_location(div, file$f, 36, 8, 783);
+    			attr_dev(div, "class", "cube svelte-sax99r");
+    			set_style(div, "animation-delay", /*version*/ ctx[3] * 0.15 + "s");
+    			set_style(div, "left", /*version*/ ctx[3] * (/*size*/ ctx[0] / 3 + /*size*/ ctx[0] / 15) + /*unit*/ ctx[2]);
+    			add_location(div, file$f, 39, 2, 836);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*size, unit*/ 3) {
-    				set_style(div, "left", /*version*/ ctx[6] * (/*size*/ ctx[0] / 3 + /*size*/ ctx[0] / 15) + /*unit*/ ctx[1]);
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "left", /*version*/ ctx[3] * (/*size*/ ctx[0] / 3 + /*size*/ ctx[0] / 15) + /*unit*/ ctx[2]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -5046,7 +4904,7 @@ var app = (function () {
     		block,
     		id: create_each_block$7.name,
     		type: "each",
-    		source: "(36:4) {#each range(3, 0) as version}",
+    		source: "(39:2) {#each range(3, 0) as version}",
     		ctx
     	});
 
@@ -5071,8 +4929,10 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", /*wrapper*/ ctx[2]);
-    			add_location(div, file$f, 34, 0, 714);
+    			attr_dev(div, "class", "wrapper svelte-sax99r");
+    			set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			set_style(div, "--color", /*color*/ ctx[1]);
+    			add_location(div, file$f, 37, 0, 730);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5085,7 +4945,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*cube, range, size, unit*/ 11) {
+    			if (dirty & /*range, size, unit*/ 5) {
     				each_value = range(3, 0);
     				validate_each_argument(each_value);
     				let i;
@@ -5107,6 +4967,14 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div, "--color", /*color*/ ctx[1]);
     			}
     		},
     		i: noop,
@@ -5132,31 +5000,6 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const motion = keyframes`
-    0% {opacity: 1;}
-    50% {opacity: 0;}
-    100% {opacity: 1;}
-`;
-
-    	const wrapper = css`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: ${size + unit};
-    height: ${size / 2.5 + unit};
-`;
-
-    	const cube = css`
-    position: absolute;
-    top: 0px;
-    width: ${size / 5 + unit};
-    height: ${size / 2.5 + unit};
-    background-color: ${color};
-    animation: ${motion} 1.5s cubic-bezier(0.895, 0.03, 0.685, 0.22) infinite;
-`;
-
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -5168,39 +5011,29 @@ var app = (function () {
 
     	$$self.$set = $$props => {
     		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		range,
-    		size,
-    		color,
-    		unit,
-    		motion,
-    		wrapper,
-    		cube
-    	});
+    	$$self.$capture_state = () => ({ range, size, color, unit });
 
     	$$self.$inject_state = $$props => {
     		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [size, unit, wrapper, cube, color];
+    	return [size, color, unit];
     }
 
     class Pulse extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$f, create_fragment$f, safe_not_equal, { size: 0, color: 4, unit: 1 });
+    		init(this, options, instance$f, create_fragment$f, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -5240,33 +5073,33 @@ var app = (function () {
 
     function get_each_context$8(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (35:8) {#each range(6, 0) as version}
+    // (41:2) {#each range(6, 0) as version}
     function create_each_block$8(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", /*ring*/ ctx[3]);
-    			set_style(div, "animation-delay", /*version*/ ctx[6] * 100 + "ms");
-    			set_style(div, "width", /*version*/ ctx[6] * (/*size*/ ctx[0] / 6) + /*unit*/ ctx[1]);
-    			set_style(div, "height", /*version*/ ctx[6] * (/*size*/ ctx[0] / 6) / 2 + /*unit*/ ctx[1]);
-    			add_location(div, file$g, 35, 12, 971);
+    			attr_dev(div, "class", "ring svelte-1uxedtb");
+    			set_style(div, "animation-delay", /*version*/ ctx[3] * 100 + "ms");
+    			set_style(div, "width", /*version*/ ctx[3] * (/*size*/ ctx[0] / 6) + /*unit*/ ctx[2]);
+    			set_style(div, "height", /*version*/ ctx[3] * (/*size*/ ctx[0] / 6) / 2 + /*unit*/ ctx[2]);
+    			add_location(div, file$g, 41, 2, 951);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*size, unit*/ 3) {
-    				set_style(div, "width", /*version*/ ctx[6] * (/*size*/ ctx[0] / 6) + /*unit*/ ctx[1]);
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "width", /*version*/ ctx[3] * (/*size*/ ctx[0] / 6) + /*unit*/ ctx[2]);
     			}
 
-    			if (dirty & /*size, unit*/ 3) {
-    				set_style(div, "height", /*version*/ ctx[6] * (/*size*/ ctx[0] / 6) / 2 + /*unit*/ ctx[1]);
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "height", /*version*/ ctx[3] * (/*size*/ ctx[0] / 6) / 2 + /*unit*/ ctx[2]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -5278,7 +5111,7 @@ var app = (function () {
     		block,
     		id: create_each_block$8.name,
     		type: "each",
-    		source: "(35:8) {#each range(6, 0) as version}",
+    		source: "(41:2) {#each range(6, 0) as version}",
     		ctx
     	});
 
@@ -5303,8 +5136,13 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", /*wrapper*/ ctx[2]);
-    			add_location(div, file$g, 33, 4, 894);
+    			attr_dev(div, "class", "wrapper svelte-1uxedtb");
+    			set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			set_style(div, "--color", /*color*/ ctx[1]);
+    			set_style(div, "--motionOne", -/*size*/ ctx[0] / 5 + /*unit*/ ctx[2]);
+    			set_style(div, "--motionTwo", /*size*/ ctx[0] / 4 + /*unit*/ ctx[2]);
+    			set_style(div, "--motionThree", -/*size*/ ctx[0] / 5 + /*unit*/ ctx[2]);
+    			add_location(div, file$g, 36, 0, 746);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5317,7 +5155,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*ring, range, size, unit*/ 11) {
+    			if (dirty & /*range, size, unit*/ 5) {
     				each_value = range(6, 0);
     				validate_each_argument(each_value);
     				let i;
@@ -5339,6 +5177,26 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div, "--color", /*color*/ ctx[1]);
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--motionOne", -/*size*/ ctx[0] / 5 + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--motionTwo", /*size*/ ctx[0] / 4 + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div, "--motionThree", -/*size*/ ctx[0] / 5 + /*unit*/ ctx[2]);
     			}
     		},
     		i: noop,
@@ -5364,30 +5222,6 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const motion = keyframes`
-        0% {transform: ${`translateY(${-size / 5 + unit});`};}
-        50% {transform: ${`translateY(${size / 4 + unit})`};}
-        100% {transform: ${`translateY(${-size / 5 + unit})`};}
-    `;
-
-    	const wrapper = css`
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: ${size + unit};
-        height: ${size + unit};
-    `;
-
-    	const ring = css`
-        position: absolute;
-        border: 2px solid ${color};
-        border-radius: 50%;
-        background-color: transparent;
-        animation: ${motion} 2.5s ease infinite;
-    `;
-
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -5399,39 +5233,29 @@ var app = (function () {
 
     	$$self.$set = $$props => {
     		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		range,
-    		size,
-    		color,
-    		unit,
-    		motion,
-    		wrapper,
-    		ring
-    	});
+    	$$self.$capture_state = () => ({ range, size, color, unit });
 
     	$$self.$inject_state = $$props => {
     		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [size, unit, wrapper, ring, color];
+    	return [size, color, unit];
     }
 
     class Jellyfish extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$g, create_fragment$g, safe_not_equal, { size: 0, color: 4, unit: 1 });
+    		init(this, options, instance$g, create_fragment$g, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -5471,7 +5295,7 @@ var app = (function () {
 
     function get_each_context$9(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
@@ -5482,11 +5306,11 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", /*dot*/ ctx[2]);
-    			set_style(div, "animation-delay", /*version*/ ctx[8] === 1 ? "-1.0s" : "0s");
-    			set_style(div, "bottom", /*version*/ ctx[8] === 1 ? "0" : "");
-    			set_style(div, "top", /*version*/ ctx[8] === 1 ? "auto" : "");
-    			add_location(div, file$h, 45, 4, 1021);
+    			attr_dev(div, "class", "dot svelte-vgpofk");
+    			set_style(div, "animation-delay", /*version*/ ctx[3] === 1 ? "-1.0s" : "0s");
+    			set_style(div, "bottom", /*version*/ ctx[3] === 1 ? "0" : "");
+    			set_style(div, "top", /*version*/ ctx[3] === 1 ? "auto" : "");
+    			add_location(div, file$h, 45, 4, 992);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5528,10 +5352,12 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", /*spinner*/ ctx[1]);
-    			add_location(div0, file$h, 43, 2, 956);
-    			attr_dev(div1, "class", /*wrapper*/ ctx[0]);
-    			add_location(div1, file$h, 42, 0, 929);
+    			attr_dev(div0, "class", "spinner svelte-vgpofk");
+    			add_location(div0, file$h, 43, 2, 929);
+    			attr_dev(div1, "class", "wrapper svelte-vgpofk");
+    			set_style(div1, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			set_style(div1, "--color", /*color*/ ctx[1]);
+    			add_location(div1, file$h, 42, 0, 857);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5545,7 +5371,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*dot, range*/ 4) {
+    			if (dirty & /*range*/ 0) {
     				each_value = range(2, 0);
     				validate_each_argument(each_value);
     				let i;
@@ -5567,6 +5393,14 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*size, unit*/ 5) {
+    				set_style(div1, "--size", /*size*/ ctx[0] + /*unit*/ ctx[2]);
+    			}
+
+    			if (dirty & /*color*/ 2) {
+    				set_style(div1, "--color", /*color*/ ctx[1]);
     			}
     		},
     		i: noop,
@@ -5592,42 +5426,6 @@ var app = (function () {
     	let { size = 60 } = $$props;
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
-
-    	const rotate = keyframes`
-    100% { transform: rotate(360deg);}
-  `;
-
-    	const bounce = keyframes`
-    0%, 
-    100% { transform: scale(0.0);} 
-    50% { transform: scale(1.0);}
-  `;
-
-    	const wrapper = css`
-    width: ${size + unit};
-    height: ${size + unit};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-    	const spinner = css`
-    width: ${size + unit};
-    height: ${size + unit};
-    animation: ${rotate} 2s infinite linear;
-  `;
-
-    	const dot = css`
-    width: 60%;
-    height: 60%;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    background-color: ${color};
-    border-radius: 100%;
-    animation: ${bounce} 2s infinite ease-in-out;
-  `;
-
     	const writable_props = ["size", "color", "unit"];
 
     	Object.keys($$props).forEach(key => {
@@ -5638,43 +5436,30 @@ var app = (function () {
     	validate_slots("Chasing", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
-    	$$self.$capture_state = () => ({
-    		css,
-    		keyframes,
-    		calculateRgba,
-    		range,
-    		size,
-    		color,
-    		unit,
-    		rotate,
-    		bounce,
-    		wrapper,
-    		spinner,
-    		dot
-    	});
+    	$$self.$capture_state = () => ({ calculateRgba, range, size, color, unit });
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("color" in $$props) $$invalidate(4, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(5, unit = $$props.unit);
+    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
+    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
+    		if ("unit" in $$props) $$invalidate(2, unit = $$props.unit);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [wrapper, spinner, dot, size, color, unit];
+    	return [size, color, unit];
     }
 
     class Chasing extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$h, create_fragment$h, safe_not_equal, { size: 3, color: 4, unit: 5 });
+    		init(this, options, instance$h, create_fragment$h, safe_not_equal, { size: 0, color: 1, unit: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
