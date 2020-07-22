@@ -31,8 +31,5 @@
   "files": [
     "src",
     "dist"
-  ],
-  "dependencies": {
-    "emotion": "^10.0.27"
-  }
+  ]
 }

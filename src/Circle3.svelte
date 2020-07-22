@@ -1,14 +1,66 @@
 <script>
-  import { css, keyframes } from "emotion";
   export let size = 60;
   export let unit = "px";
   export let ballTopLeft = "#FF3E00";
   export let ballTopRight = "#F8B334";
   export let ballBottomLeft = "#40B3FF";
   export let ballBottomRight = "#676778";
+</script>
 
-  const ballOne = keyframes`
-  0% {
+<style>
+  .wrapper {
+    width: var(--size);
+    height: var(--size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    box-sizing: border-box;
+  }
+  .inner {
+    transform: scale(calc(var(--floatSize) / 52));
+  }
+  .ball-container {
+    animation: ballTwo 1.5s infinite;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .single-ball {
+    width: 44px;
+    height: 44px;
+    position: absolute;
+  }
+  .ball {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    animation: ballOne 1.5s infinite ease;
+  }
+  .ball-top-left {
+    background-color: var(--ballTopLeftColor);
+    top: 0;
+    left: 0;
+  }
+  .ball-top-right {
+    background-color: var(--ballTopRightColor);
+    top: 0;
+    left: 24px;
+  }
+  .ball-bottom-left {
+    background-color: var(--ballBottomLeftColor);
+    top: 24px;
+    left: 0;
+  }
+  .ball-bottom-right {
+    background-color: var(--ballBottomRightColor);
+    top: 24px;
+    left: 24px;
+  }
+  @keyframes ballOne {
+    0% {
       position: absolute;
     }
     50% {
@@ -20,9 +72,9 @@
     100% {
       position: absolute;
     }
-  `;
-  const ballTwo = keyframes`
-  0% {
+  }
+  @keyframes ballTwo {
+    0% {
       transform: rotate(0deg) scale(1);
     }
     50% {
@@ -31,74 +83,26 @@
     100% {
       transform: rotate(720deg) scale(1);
     }
-  `;
-  const wrapper = css`
-    width: ${size + unit};
-    height: ${size + unit};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: 0;
-    box-sizing: border-box;
-  `;
-  const inner = css`
-    transform: scale(${parseInt(size) / 52});
-  `;
-  const ballContainer = css`
-    animation: ${ballTwo} 1.5s infinite;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    position: relative;
-  `;
-  const singleBall = css`
-    width: 44px;
-    height: 44px;
-    position: absolute;
-  `;
-  const ball = css`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    position: absolute;
-    animation: ${ballOne} 1.5s infinite ease;
-  `;
-  const ballTL = css`
-    background-color: ${ballTopLeft};
-    top: 0;
-    left: 0;
-  `;
-  const ballTR = css`
-    background-color: ${ballTopRight};
-    top: 0;
-    left: 24px;
-  `;
-  const ballBL = css`
-    background-color: ${ballBottomLeft};
-    top: 24px;
-    left: 0;
-  `;
-  const ballBR = css`
-    background-color: ${ballBottomRight};
-    top: 24px;
-    left: 24px;
-  `;
-</script>
+  }
+</style>
 
-<div class="{wrapper}">
-  <div class="{inner}">
-    <div class="{ballContainer}">
-      <div class="{singleBall}">
-        <div class="{ball} {ballTL}">&nbsp;</div>
+<div
+  class="wrapper"
+  style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}"
+>
+  <div class="inner">
+    <div class="ball-container">
+      <div class="single-ball">
+        <div class="ball ball-top-left">&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="{ball} {ballTR}">&nbsp;</div>
+        <div class="ball ball-top-right">&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="{ball} {ballBL}">&nbsp;</div>
+        <div class="ball ball-bottom-left">&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="{ball} {ballBR}">&nbsp;</div>
+        <div class="ball ball-bottom-right">&nbsp;</div>
       </div>
     </div>
   </div>
