@@ -56,6 +56,8 @@ Notes:
 |      Stretch |
 |   SyncLoader |
 |         Wave |
+|       Square |
+|         Moon |
 
 ## Demo
 
