@@ -18,7 +18,9 @@
 		Pulse, 
 		Jellyfish,
 		Chasing,
-		Shadow
+		Shadow,
+		Square,
+		Moon
 	} from "../../src/index";
 	export let name;
   
@@ -82,82 +84,90 @@
   </div>
   <section>
   
-	<div class="spinner-item">
+	<div class="spinner-item" title="SpinLine">
 		  <SpinLine size="60" color="#FF3E00"/>
 		  <div class="spinner-title">SpinLine</div>
 	  </div>
    
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="Circle2">
 			  <Circle2 size="60" unit="px" colorOuter="#FF3E00" colorCenter="#40B3FF" colorInner="#676778"/>
 			  <div class="spinner-title">Circle2</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="DoubleBounce">
 			  <DoubleBounce size="60" color="#FF3E00"/>
 			  <div class="spinner-title">DoubleBounce</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="Circle">
 			  <Circle size="60" color="#FF3E00" unit="px"/>
 			  <div class="spinner-title">Circle</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="Stretch">
 			  <Stretch size="60" color="#FF3E00"/>
 			  <div class="spinner-title">Stretch</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="Circle3">
 			  <Circle3 size="60" unit="px" ballTopLeft="#FF3E00" ballTopRight="#F8B334" ballBottomLeft="#40B3FF" ballBottomRight="#676778"/>
 			  <div class="spinner-title">Circle3</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="BarLoader">
 			  <BarLoader size="60" color="#FF3E00" unit="px" />
 			  <div class="spinner-title">BarLoader</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="SyncLoader">
 			  <SyncLoader size="60" color="#FF3E00"/>
 			  <div class="spinner-title">SyncLoader</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="Jumper">
 			  <Jumper size="60" color="#FF3E00"/>
 			  <div class="spinner-title">Jumper</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="GoogleSpin">
 			  <GoogleSpin size="60px"/>
 			  <div class="spinner-title">GoogleSpin</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="ScaleOut">
 			  <ScaleOut size="60" color="#FF3E00"/>
 			  <div class="spinner-title">ScaleOut</div>
 	  </div>
-	  <div class="spinner-item">
+	  <div class="spinner-item" title="RingLoader">
 			  <RingLoader size="60" color="#FF3E00"/>
 		  <div class="spinner-title">RingLoader</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Rainbow">
 			  <Rainbow size="60" color="#FF3E00"/>
 		  <div class="spinner-title">Rainbow</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Wave">
 			  <Wave size="60" color="#FF3E00"/>
 		  <div class="spinner-title">Wave</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Firework">
 			  <Firework size="60" color="#FF3E00"/>
 		  <div class="spinner-title">Firework</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Pulse">
 			  <Pulse size="60" color="#FF3E00"/>
 		  <div class="spinner-title">Pulse</div>
 	  	</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Jellyfish">
 			<Jellyfish size="60" color="#FF3E00"/>
 			<div class="spinner-title">Jellyfish</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Chasing">
 			<Chasing size="60" color="#FF3E00" unit="px"/>
 			<div class="spinner-title">Chasing</div>
 		</div>
-		<div class="spinner-item">
+		<div class="spinner-item" title="Shadow">
 			<Shadow size="60" color="#FF3E00"/>
 			<div class="spinner-title">Shadow</div>
+		</div>
+		<div class="spinner-item" title="Square">
+			<Square size="60" color="#FF3E00"/>
+			<div class="spinner-title">Square</div>
+		</div>
+		<div class="spinner-item" title="Moon">
+			<Moon size="60" color="#FF3E00"/>
+			<div class="spinner-title">Moon</div>
 		</div>
   </section>
   

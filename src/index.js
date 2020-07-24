@@ -14,9 +14,11 @@ import Rainbow from "./Rainbow.svelte";
 import Wave from "./Wave.svelte";
 import Firework from "./Firework.svelte";
 import Pulse from "./Pulse.svelte";
-import Jellyfish from './Jellyfish.svelte';
-import Chasing from './Chasing.svelte';
-import Shadow from './Shadow.svelte';
+import Jellyfish from "./Jellyfish.svelte";
+import Chasing from "./Chasing.svelte";
+import Shadow from "./Shadow.svelte";
+import Square from "./Square.svelte";
+import Moon from "./Moon.svelte";
 
 export {
   Circle,
@@ -37,5 +39,7 @@ export {
   Pulse,
   Jellyfish,
   Chasing,
-  Shadow
+  Shadow,
+  Square,
+  Moon,
 };
