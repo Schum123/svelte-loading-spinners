@@ -4,10 +4,13 @@
   export let color = "#FF3E00";
   export let unit = "px";
 </script>
+
 <style>
   .wrapper {
     width: var(--size);
     height: var(--size);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    -webkit-transform: translateZ(0);
   }
   .circle {
     border-radius: 100%;
@@ -29,14 +32,15 @@
     }
     100% {
       opacity: 0;
+      transform: scale(1);
     }
   }
 </style>
+
 <div class="wrapper" style="--size: {size}{unit}; --color: {color}">
   {#each range(3, 1) as version}
-  <div
-    class="circle"
-    style="animation-delay: {(version === 1) ? `0s` : (version === 2) ? `0.33333s` : (version === 3) ? `0.66666s`: `0s`}"
-  ></div>
+    <div
+      class="circle"
+      style="animation-delay: {version === 1 ? `0s` : version === 2 ? `0.33333s` : version === 3 ? `0.66666s` : `0s`}" />
   {/each}
 </div>
