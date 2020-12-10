@@ -9,8 +9,6 @@
   .wrapper {
     width: var(--size);
     height: var(--size);
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-    -webkit-transform: translateZ(0);
   }
   .circle {
     border-radius: 100%;
