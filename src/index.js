@@ -19,6 +19,8 @@ import Chasing from "./Chasing.svelte";
 import Shadow from "./Shadow.svelte";
 import Square from "./Square.svelte";
 import Moon from "./Moon.svelte";
+import Plane from "./Plane.svelte";
+import Diamonds from "./Diamonds.svelte";
 
 export {
   Circle,
@@ -42,4 +44,6 @@ export {
   Shadow,
   Square,
   Moon,
+  Plane,
+  Diamonds,
 };

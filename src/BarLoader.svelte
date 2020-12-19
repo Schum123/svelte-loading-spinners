@@ -3,7 +3,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
-  let rgba = calculateRgba(color, 0.2);
+  $: rgba = calculateRgba(color, 0.2);
 </script>
 
 <style>
