@@ -1,8 +1,12 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "3s";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
 </script>
 
 <style>
@@ -18,7 +22,7 @@
     width: var(--size);
     height: var(--size);
     background-color: var(--color);
-    animation: bounce 1s linear infinite;
+    animation: bounce var(--duration) linear infinite;
   }
   @keyframes bounce {
     0% {
@@ -35,10 +39,10 @@
   }
 </style>
 
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(3, 1) as version}
     <div
       class="circle"
-      style="animation-delay: {version === 1 ? `0s` : version === 2 ? `0.33333s` : version === 3 ? `0.66666s` : `0s`}" />
+      style="animation-delay: {(durationNum/3)*(version-1) + durationUnit};" />
   {/each}
 </div>

@@ -2,6 +2,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "1.25s";
 </script>
 <style>
   .wrapper {
@@ -16,7 +17,7 @@
     width: var(--size);
     height: var(--size);
     border-radius: 50%;
-    animation: fire 1.25s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    animation: fire var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
   }
 
   @keyframes fire {
@@ -33,6 +34,6 @@
     }
   }
 </style>
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   <div class="firework"></div>
 </div>

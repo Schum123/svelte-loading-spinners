@@ -1,9 +1,10 @@
 <script>
   export let size = "40px";
+  export let duration = "3s";
   $: styles = [`width: ${size}`, `height: ${size}`].join(";");
 </script>
 
-<div class="spinner spinner--google" style="{styles}"></div>
+<div class="spinner spinner--google" style="--duration: {duration}; {styles}"></div>
 
 <style>
   * {
@@ -15,7 +16,7 @@
     border-radius: 50%;
     transform: rotateZ(90deg);
     transform-origin: 50% 50%;
-    animation: plus-loader-background 3s infinite ease-in-out;
+    animation: plus-loader-background var(--duration) infinite ease-in-out;
   }
 
   *:after {
@@ -28,7 +29,7 @@
     width: 50%;
     height: 100%;
     transform-origin: 100% 50%;
-    animation: plus-loader-top 3s infinite linear;
+    animation: plus-loader-top var(--duration) infinite linear;
   }
 
   *:before {
@@ -41,7 +42,7 @@
     width: 50%;
     height: 100%;
     transform-origin: 100% 50%;
-    animation: plus-loader-bottom 3s infinite linear;
+    animation: plus-loader-bottom var(--duration) infinite linear;
   }
 
   @keyframes plus-loader-top {

@@ -3,6 +3,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "2s";
 </script>
 
 <style>
@@ -26,10 +27,10 @@
     border-radius: 100%;
   }
   .border.\31 {
-    animation: 2s linear 0s infinite normal none running ringOne;
+    animation: var(--duration) linear 0s infinite normal none running ringOne;
   }
   .border.\32 {
-    animation: 2s linear 0s infinite normal none running ringTwo;
+    animation: var(--duration) linear 0s infinite normal none running ringTwo;
   }
 
   @keyframes ringOne {
@@ -50,7 +51,7 @@
   }
 </style>
 
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(2, 1) as version}
   <div class="border {version}"></div>
   {/each}

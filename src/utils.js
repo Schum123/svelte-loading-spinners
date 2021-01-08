@@ -1,3 +1,5 @@
+export const durationUnitRegex = /[a-zA-Z]/;
+
 export const calculateRgba = (input, opacity) => {
   let color;
   if (input[0] === `#`) {

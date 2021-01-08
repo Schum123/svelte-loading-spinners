@@ -2,6 +2,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "0.6s";
   let moonSize = size / 7;
   let top = size / 2 - moonSize / 2;
 </script>
@@ -11,7 +12,7 @@
     height: var(--size);
     width: var(--size);
     border-radius: 100%;
-    animation: moonStretchDelay 0.6s 0s infinite linear;
+    animation: moonStretchDelay var(--duration) 0s infinite linear;
     animation-fill-mode: forwards;
     position: relative;
   }
@@ -21,7 +22,7 @@
     width: calc(var(--size) / 7);
     height: calc(var(--size) / 7);
     border-radius: 100%;
-    animation: moonStretchDelay 0.6s 0s infinite linear;
+    animation: moonStretchDelay var(--duration) 0s infinite linear;
     animation-fill-mode: forwards;
     opacity: 0.8;
     position: absolute;
@@ -43,7 +44,7 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}"
+  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};"
 >
   <div class="circle-one"></div>
   <div class="circle-two"></div>

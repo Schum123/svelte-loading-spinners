@@ -5,6 +5,7 @@
   export let ballTopRight = "#F8B334";
   export let ballBottomLeft = "#40B3FF";
   export let ballBottomRight = "#676778";
+  export let duration = "1.5s";
 </script>
 
 <style>
@@ -21,7 +22,7 @@
     transform: scale(calc(var(--floatSize) / 52));
   }
   .ball-container {
-    animation: ballTwo 1.5s infinite;
+    animation: ballTwo var(--duration) infinite;
     width: 44px;
     height: 44px;
     flex-shrink: 0;
@@ -37,7 +38,7 @@
     height: 20px;
     border-radius: 50%;
     position: absolute;
-    animation: ballOne 1.5s infinite ease;
+    animation: ballOne var(--duration) infinite ease;
   }
   .ball-top-left {
     background-color: var(--ballTopLeftColor);
@@ -88,7 +89,7 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}"
+  style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}; --duration: {duration};"
 >
   <div class="inner">
     <div class="ball-container">

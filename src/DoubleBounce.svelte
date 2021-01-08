@@ -1,8 +1,14 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+
+  export let duration = "2.1s";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
+
 </script>
 <style>
   .wrapper {
@@ -36,7 +42,7 @@
   {#each range(2, 1) as version}
   <div
     class="circle"
-    style="animation: 2.1s {version === 1 ? `1s` : `0s`} infinite ease-in-out"
+    style="animation: {duration} {version === 1 ? `${(durationNum-0.1)/2}${durationUnit}` : `0s`} infinite ease-in-out"
   ></div>
   {/each}
 </div>

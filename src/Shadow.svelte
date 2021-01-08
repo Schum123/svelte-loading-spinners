@@ -2,6 +2,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "1.7s";
 </script>
 <style>
   .wrapper {
@@ -22,7 +23,7 @@
     margin: 28px auto;
     position: relative;
     transform: translateZ(0);
-    animation: load 1.7s infinite ease, round 1.7s infinite ease;
+    animation: load var(--duration) infinite ease, round var(--duration) infinite ease;
   }
   @keyframes load {
     0% {
@@ -64,6 +65,6 @@
     }
   }
 </style>
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   <div class="shadow"></div>
 </div>

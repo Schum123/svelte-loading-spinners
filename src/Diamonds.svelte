@@ -1,8 +1,9 @@
 <script>
-  import { range } from "./utils";
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+
+  export let duration = "1.5s";
 </script>
 
 <style>
@@ -21,16 +22,16 @@
     border-radius: 2px;
     background: var(--color);
     transform: translateX(-50%) rotate(45deg) scale(0);
-    animation: diamonds 1500ms linear infinite;
+    animation: diamonds var(--duration) linear infinite;
   }
   div:nth-child(1) {
-    animation-delay: -1s;
+    animation-delay: calc(var(--duration)*2/3*-1);
   }
   div:nth-child(2) {
-    animation-delay: -2s;
+    animation-delay: calc(var(--duration)*2/3*-2);
   }
   div:nth-child(3) {
-    animation-delay: -3s;
+    animation-delay: calc(var(--duration)*2/3*-3);
   }
 
   @keyframes diamonds {
@@ -45,8 +46,8 @@
   }
 </style>
 
-<span style="--size: {size}{unit}; --color:{color}">
-  <div></div>
-  <div></div>
-  <div></div>
+<span style="--size: {size}{unit}; --color:{color}; --duration: {duration};">
+  <div />
+  <div />
+  <div />
 </span>

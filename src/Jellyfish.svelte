@@ -1,9 +1,13 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
 
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "2.5s";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
 </script>
 <style>
   .wrapper {
@@ -19,7 +23,7 @@
     border: 2px solid var(--color);
     border-radius: 50%;
     background-color: transparent;
-    animation: motion 2.5s ease infinite;
+    animation: motion var(--duration) ease infinite;
   }
   @keyframes motion {
     0% {
@@ -36,12 +40,12 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --motionOne: {-size/5}{unit}; --motionTwo: {size/4}{unit}; --motionThree: {-size/5}{unit}"
+  style="--size: {size}{unit}; --color: {color}; --motionOne: {-size/5}{unit}; --motionTwo: {size/4}{unit}; --motionThree: {-size/5}{unit}; --duration: {duration};"
 >
   {#each range(6, 0) as version}
   <div
     class="ring"
-    style="animation-delay: {version * 100}ms; width: {version * (size / 6)+unit}; height: {version * (size / 6) / 2+unit}; "
+    style="animation-delay: {version * (durationNum/25)}{durationUnit}; width: {version * (size / 6)+unit}; height: {version * (size / 6) / 2+unit}; "
   ></div>
   {/each}
 </div>

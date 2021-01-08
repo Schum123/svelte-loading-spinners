@@ -2,6 +2,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "3s";
 </script>
 
 <style>
@@ -21,7 +22,7 @@
     transform: rotate(-200deg);
     border-radius: 50%;
     border-style: solid;
-    animation: 3s ease-in-out 0s infinite normal none running rotate;
+    animation: var(--duration) ease-in-out 0s infinite normal none running rotate;
   }
   @keyframes rotate {
     0% {
@@ -43,6 +44,6 @@
   }
 </style>
 
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   <div class="rainbow"></div>
 </div>

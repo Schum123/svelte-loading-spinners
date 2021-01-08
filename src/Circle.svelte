@@ -2,6 +2,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "0.75s";
 </script>
 <style>
   .circle {
@@ -12,7 +13,7 @@
     border-style: solid;
     border-image: initial;
     border-radius: 50%;
-    animation: 0.75s linear 0s infinite normal none running rotate;
+    animation: var(--duration) linear 0s infinite normal none running rotate;
   }
   @keyframes rotate {
     0% {
@@ -23,4 +24,4 @@
     }
   }
 </style>
-<div class="circle" style="--size: {size}{unit}; --color: {color};"></div>
+<div class="circle" style="--size: {size}{unit}; --color: {color}; --duration: {duration}"></div>
