@@ -3,7 +3,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
-  export let duration = "3s";
+  export let duration = "1s";
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");
