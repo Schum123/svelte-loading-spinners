@@ -3,6 +3,7 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "2.1s";
   $: rgba = calculateRgba(color, 0.2);
 </script>
 
@@ -30,11 +31,11 @@
     animation-fill-mode: forwards;
   }
   .small-lines.\31 {
-    animation: 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal
+    animation: var(--duration) cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal
       none running long;
   }
   .small-lines.\32 {
-    animation: 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite normal
+    animation: var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1) calc((var(--duration)+0.1)/2) infinite normal
       none running short;
   }
 
@@ -70,6 +71,6 @@
 
 <div class="wrapper" style="--size: {size}{unit}; --rgba:{rgba}">
   {#each range(2, 1) as version}
-  <div class="lines small-lines {version}" style="--color: {color};"></div>
+  <div class="lines small-lines {version}" style="--color: {color}; --duration: {duration};"></div>
   {/each}
 </div>

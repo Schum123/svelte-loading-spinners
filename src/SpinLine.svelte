@@ -3,6 +3,7 @@
   export let color = "#FF3E00";
   export let unit = "px";
   export let stroke = parseInt(size / 12) + unit;
+  export let duration = "4s";
 </script>
 <style>
   .wrapper {
@@ -19,7 +20,7 @@
     background: var(--color);
     border-radius: var(--stroke);
     transform-origin: center center;
-    animation: spineLine 4s ease infinite;
+    animation: spineLine var(--duration) ease infinite;
   }
   @keyframes spineLine {
     0% {
@@ -79,7 +80,7 @@
 </style>
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --stroke: {stroke}; --floatSize: {size}"
+  style="--size: {size}{unit}; --color: {color}; --stroke: {stroke}; --floatSize: {size}; --duration: {duration}"
 >
   <div class="line"></div>
 </div>

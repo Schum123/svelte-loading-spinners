@@ -1,8 +1,12 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "0.6s";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
 </script>
 
 <style>
@@ -21,7 +25,7 @@
     margin: 2px;
     display: inline-block;
     border-radius: 100%;
-    animation: sync 0.6s ease-in-out infinite alternate both running;
+    animation: sync var(--duration) ease-in-out infinite alternate both running;
   }
 
   @-webkit-keyframes sync {
@@ -54,11 +58,11 @@
   }
 </style>
 
-<div class="wrapper" style="--size:{size}{unit}">
+<div class="wrapper" style="--size:{size}{unit}; --duration: {duration};">
   {#each range(3, 1) as i}
   <div
     class="dot"
-    style="--dotSize:{size * 0.25}{unit}; --color:{color}; animation-delay:  {i * 0.07}s;"
+    style="--dotSize:{size * 0.25}{unit}; --color:{color}; animation-delay:  {i * (durationNum/10)}{durationUnit};"
   ></div>
   {/each}
 </div>

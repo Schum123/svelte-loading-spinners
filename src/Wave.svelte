@@ -1,8 +1,12 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "1.25s";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
 </script>
 <style>
   .wrapper {
@@ -22,7 +26,7 @@
     margin-top: calc(var(--size) - var(--size) / 10);
     transform: skewY(0deg);
     background-color: var(--color);
-    animation: motion 1.25s ease-in-out infinite;
+    animation: motion var(--duration) ease-in-out infinite;
   }
   @keyframes motion {
     25% {
@@ -37,11 +41,11 @@
     }
   }
 </style>
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}">
+<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(10, 0) as version}
   <div
     class="bar"
-    style="left: {version * (size / 5 + (size / 15 - size / 100))+unit}; animation-delay: {version * 0.15}s;"
+    style="left: {version * (size / 5 + (size / 15 - size / 100))+unit}; animation-delay: {version * (durationNum/8.3)}{durationUnit};"
   ></div>
   {/each}
 </div>

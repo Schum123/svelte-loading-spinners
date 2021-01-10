@@ -1,10 +1,13 @@
 <script>
-  import { range } from "./utils";
+  import { range, durationUnitRegex } from "./utils";
 
   export let size = 60;
   export let color = "#FF3E00";
   export let duration = "1.2s";
   export let unit = "px";
+
+  let durationUnit = duration.match(durationUnitRegex)[0];
+  let durationNum = duration.replace(durationUnitRegex, "");
 </script>
 
 <style>
@@ -42,7 +45,7 @@
   {#each range(5, 1) as version}
   <div
     class="rect"
-    style="animation-delay: {version === 2 ? '-1.1s' : version === 3 ? '-1s' : version === 4 ? '-0.9s' : version === 5 ? '-0.8s': ''}"
+    style="animation-delay: {(version-1)*(durationNum/12)}{durationUnit}"
   ></div>
   {/each}
 </div>

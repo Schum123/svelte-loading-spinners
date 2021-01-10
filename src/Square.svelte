@@ -2,13 +2,14 @@
   export let size = 60;
   export let color = "#FF3E00";
   export let unit = "px";
+  export let duration = "3s";
 </script>
 <style>
   .square {
     height: var(--size);
     width: var(--size);
     background-color: var(--color);
-    animation: squareDelay 3s 0s infinite cubic-bezier(0.09, 0.57, 0.49, 0.9);
+    animation: squareDelay var(--duration) 0s infinite cubic-bezier(0.09, 0.57, 0.49, 0.9);
     animation-fill-mode: both;
     perspective: 100px;
     display: inline-block;
@@ -32,4 +33,4 @@
     }
   }
 </style>
-<div class="square" style="--size: {size}{unit}; --color: {color}"></div>
+<div class="square" style="--size: {size}{unit}; --color: {color}; --duration: {duration};"></div>
