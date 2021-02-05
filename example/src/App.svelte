@@ -98,7 +98,8 @@
     position: sticky;
     margin-left: 35px;
     top: 50px;
-    display: inline-block;
+	display: inline-block;
+	z-index: 1;
   }
 </style>
 
