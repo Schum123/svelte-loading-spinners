@@ -31,7 +31,7 @@
   let unit = "px";
   let colorPicker;
 
-  function triggerColorPricker() {
+  function triggerColorPicker() {
     colorPicker.click();
   }
 </script>
@@ -110,7 +110,7 @@
 </div>
 <div class="color-picker">
   <span class="color-value">Color: {color}</span>
-  <button on:click={triggerColorPricker}>Change color</button>
+  <button on:click={triggerColorPicker}>Change color</button>
   <input type="color" bind:value={color} bind:this={colorPicker} />
 </div>
 
