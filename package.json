@@ -9,7 +9,7 @@
     "prebuild": "rm -rf ./dist",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "prepublishOnly": "npm run svelte-check && npm run build",
+    "prepublishOnly": "npm run build",
     "svelte-check": "svelte-check"
   },
   "repository": {
