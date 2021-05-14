@@ -1,10 +1,10 @@
-<script>
-  export let size = 60;
-  export let unit = "px";
-  export let ballTopLeft = "#FF3E00";
-  export let ballTopRight = "#F8B334";
-  export let ballBottomLeft = "#40B3FF";
-  export let ballBottomRight = "#676778";
+<script lang="ts">
+  export let size: string | number = "60";
+  export let unit: string = "px";
+  export let ballTopLeft: string = "#FF3E00";
+  export let ballTopRight: string = "#F8B334";
+  export let ballBottomLeft: string = "#40B3FF";
+  export let ballBottomRight: string = "#676778";
   export let duration = "1.5s";
 </script>
 
@@ -89,8 +89,7 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}; --duration: {duration};"
->
+  style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}; --duration: {duration};">
   <div class="inner">
     <div class="ball-container">
       <div class="single-ball">

@@ -1,14 +1,14 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { range, durationUnitRegex } from "./utils";
-
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "2.5s";
-
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "2.5s";
+  export let size: SpinnerTypes["size"] = "60";
   let durationUnit = duration.match(durationUnitRegex)[0];
-  let durationNum = duration.replace(durationUnitRegex, "");
+  let durationNum: any = duration.replace(durationUnitRegex, "");
 </script>
+
 <style>
   .wrapper {
     position: relative;
@@ -40,12 +40,10 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --motionOne: {-size/5}{unit}; --motionTwo: {size/4}{unit}; --motionThree: {-size/5}{unit}; --duration: {duration};"
->
+  style="--size: {size}{unit}; --color: {color}; --motionOne: {-size / 5}{unit}; --motionTwo: {+size / 4}{unit}; --motionThree: {-size / 5}{unit}; --duration: {duration};">
   {#each range(6, 0) as version}
-  <div
-    class="ring"
-    style="animation-delay: {version * (durationNum/25)}{durationUnit}; width: {version * (size / 6)+unit}; height: {version * (size / 6) / 2+unit}; "
-  ></div>
+    <div
+      class="ring"
+      style="animation-delay: {version * (durationNum / 25)}{durationUnit}; width: {version * (+size / 6) + unit}; height: {(version * (+size / 6)) / 2 + unit}; " />
   {/each}
 </div>

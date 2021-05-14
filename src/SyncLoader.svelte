@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { range, durationUnitRegex } from "./utils";
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "0.6s";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "0.6s";
+  export let size: SpinnerTypes["size"] = "60";
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");
@@ -60,9 +61,8 @@
 
 <div class="wrapper" style="--size:{size}{unit}; --duration: {duration};">
   {#each range(3, 1) as i}
-  <div
-    class="dot"
-    style="--dotSize:{size * 0.25}{unit}; --color:{color}; animation-delay:  {i * (durationNum/10)}{durationUnit};"
-  ></div>
+    <div
+      class="dot"
+      style="--dotSize:{+size * 0.25}{unit}; --color:{color}; animation-delay:  {i * (+durationNum / 10)}{durationUnit};" />
   {/each}
 </div>

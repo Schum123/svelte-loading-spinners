@@ -1,9 +1,11 @@
-<script>
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "1.7s";
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "1.7s";
+  export let size: SpinnerTypes["size"] = "60";
 </script>
+
 <style>
   .wrapper {
     position: relative;
@@ -23,7 +25,8 @@
     margin: 28px auto;
     position: relative;
     transform: translateZ(0);
-    animation: load var(--duration) infinite ease, round var(--duration) infinite ease;
+    animation: load var(--duration) infinite ease,
+      round var(--duration) infinite ease;
   }
   @keyframes load {
     0% {
@@ -65,6 +68,9 @@
     }
   }
 </style>
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
-  <div class="shadow"></div>
+
+<div
+  class="wrapper"
+  style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
+  <div class="shadow" />
 </div>

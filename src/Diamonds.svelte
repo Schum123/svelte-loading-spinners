@@ -1,9 +1,9 @@
-<script>
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-
-  export let duration = "1.5s";
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "1.5s";
+  export let size: SpinnerTypes["size"] = "60";
 </script>
 
 <style>
@@ -25,13 +25,13 @@
     animation: diamonds var(--duration) linear infinite;
   }
   div:nth-child(1) {
-    animation-delay: calc(var(--duration)*2/3*-1);
+    animation-delay: calc(var(--duration) * 2 / 3 * -1);
   }
   div:nth-child(2) {
-    animation-delay: calc(var(--duration)*2/3*-2);
+    animation-delay: calc(var(--duration) * 2 / 3 * -2);
   }
   div:nth-child(3) {
-    animation-delay: calc(var(--duration)*2/3*-3);
+    animation-delay: calc(var(--duration) * 2 / 3 * -3);
   }
 
   @keyframes diamonds {

@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { calculateRgba, range } from "./utils";
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "2.1s";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "2.1s";
+  export let size: SpinnerTypes["size"] = "60";
+  let rgba: string;
   $: rgba = calculateRgba(color, 0.2);
 </script>
 
@@ -31,12 +33,12 @@
     animation-fill-mode: forwards;
   }
   .small-lines.\31 {
-    animation: var(--duration) cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s infinite normal
-      none running long;
+    animation: var(--duration) cubic-bezier(0.65, 0.815, 0.735, 0.395) 0s
+      infinite normal none running long;
   }
   .small-lines.\32 {
-    animation: var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1) calc((var(--duration)+0.1)/2) infinite normal
-      none running short;
+    animation: var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1)
+      calc((var(--duration)+0.1) / 2) infinite normal none running short;
   }
 
   @keyframes long {
@@ -71,6 +73,8 @@
 
 <div class="wrapper" style="--size: {size}{unit}; --rgba:{rgba}">
   {#each range(2, 1) as version}
-  <div class="lines small-lines {version}" style="--color: {color}; --duration: {duration};"></div>
+    <div
+      class="lines small-lines {version}"
+      style="--color: {color}; --duration: {duration};" />
   {/each}
 </div>

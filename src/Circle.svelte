@@ -1,9 +1,11 @@
-<script>
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "0.75s";
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "0.75s";
+  export let size: SpinnerTypes["size"] = "60";
 </script>
+
 <style>
   .circle {
     height: var(--size);
@@ -24,4 +26,7 @@
     }
   }
 </style>
-<div class="circle" style="--size: {size}{unit}; --color: {color}; --duration: {duration}"></div>
+
+<div
+  class="circle"
+  style="--size: {size}{unit}; --color: {color}; --duration: {duration}" />

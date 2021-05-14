@@ -4,13 +4,14 @@ import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import css from "rollup-plugin-css-only";
+import typescript from "@rollup/plugin-typescript";
+import autoPreprocess from "svelte-preprocess";
 
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-  input: "src/main.js",
+  input: "src/main.ts",
   output: {
-    sourcemap: true,
     format: "iife",
     name: "app",
     file: "public/bundle.js",
@@ -21,6 +22,7 @@ export default {
         // enable run-time checks when not in production
         dev: !production,
       },
+      preprocess: autoPreprocess(),
       // we'll extract any component CSS out into
       // a separate file - better for performance
     }),
@@ -36,6 +38,7 @@ export default {
       dedupe: ["svelte"],
     }),
     commonjs(),
+    typescript({ rootDir: "/src" }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated

@@ -1,10 +1,11 @@
-<script>
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "0.6s";
-  let moonSize = size / 7;
-  let top = size / 2 - moonSize / 2;
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "0.6s";
+  export let size: SpinnerTypes["size"] = "60";
+  let moonSize: number = +size / 7;
+  let top: number = +size / 2 - moonSize / 2;
 </script>
 
 <style>
@@ -44,8 +45,7 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};"
->
-  <div class="circle-one"></div>
-  <div class="circle-two"></div>
+  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};">
+  <div class="circle-one" />
+  <div class="circle-two" />
 </div>

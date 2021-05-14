@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { durationUnitRegex, range } from "./utils";
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "2s";
+  export let size: SpinnerTypes["size"] = "60";
 
-  export let duration = "2s";
-
-  let durationUnit = duration.match(durationUnitRegex)[0];
-  let durationNum = duration.replace(durationUnitRegex, "");
+  let durationUnit: any = duration.match(durationUnitRegex)[0];
+  let durationNum: any = duration.replace(durationUnitRegex, "");
 </script>
 
 <style>
@@ -50,12 +50,14 @@
   }
 </style>
 
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
+<div
+  class="wrapper"
+  style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   <div class="spinner">
     {#each range(2, 0) as version}
       <div
         class="dot"
-        style="animation-delay: {version === 1 ? `${durationNum/2}${durationUnit}` : '0s'}; bottom: {version === 1 ? '0' : ''}; top: {version === 1 ? 'auto' : ''};" />
+        style="animation-delay: {version === 1 ? `${durationNum / 2}${durationUnit}` : '0s'}; bottom: {version === 1 ? '0' : ''}; top: {version === 1 ? 'auto' : ''};" />
     {/each}
   </div>
 </div>

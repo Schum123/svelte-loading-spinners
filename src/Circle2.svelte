@@ -1,13 +1,13 @@
-<script>
-  export let size = 60;
-  export let unit = "px";
-  export let colorOuter = "#FF3E00";
-  export let colorCenter = "#40B3FF";
-  export let colorInner = "#676778";
-  export let durationMultiplier = 1;
-  export let durationOuter = `${durationMultiplier*2}s`;
-  export let durationInner = `${durationMultiplier*1.5}s`;
-  export let durationCenter = `${durationMultiplier*3}s`;
+<script lang="ts">
+  export let size: string | number = "60";
+  export let unit: string = "px";
+  export let colorOuter: string = "#FF3E00";
+  export let colorCenter: string = "#40B3FF";
+  export let colorInner: string = "#676778";
+  export let durationMultiplier: number = 1;
+  export let durationOuter: string = `${durationMultiplier * 2}s`;
+  export let durationInner: string = `${durationMultiplier * 1.5}s`;
+  export let durationCenter: string = `${durationMultiplier * 3}s`;
 </script>
 
 <style>
@@ -57,5 +57,4 @@
 
 <div
   class="circle"
-  style="--size: {size}{unit}; --colorInner: {colorInner}; --colorCenter: {colorCenter}; --colorOuter: {colorOuter}; --durationInner: {durationInner}; --durationCenter: {durationCenter}; --durationOuter: {durationOuter};"
-></div>
+  style="--size: {size}{unit}; --colorInner: {colorInner}; --colorCenter: {colorCenter}; --colorOuter: {colorOuter}; --durationInner: {durationInner}; --durationCenter: {durationCenter}; --durationOuter: {durationOuter};" />

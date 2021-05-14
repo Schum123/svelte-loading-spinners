@@ -1,10 +1,12 @@
-<script>
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let stroke = parseInt(size / 12) + unit;
-  export let duration = "4s";
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "4s";
+  export let size: SpinnerTypes["size"] = "60";
+  export let stroke = +size / 12 + unit;
 </script>
+
 <style>
   .wrapper {
     width: var(--size);
@@ -78,9 +80,9 @@
     }
   }
 </style>
+
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --stroke: {stroke}; --floatSize: {size}; --duration: {duration}"
->
-  <div class="line"></div>
+  style="--size: {size}{unit}; --color: {color}; --stroke: {stroke}; --floatSize: {size}; --duration: {duration}">
+  <div class="line" />
 </div>

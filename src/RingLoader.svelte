@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { range } from "./utils";
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "2s";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "2s";
+  export let size: SpinnerTypes["size"] = "60";
 </script>
 
 <style>
@@ -51,8 +52,10 @@
   }
 </style>
 
-<div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
+<div
+  class="wrapper"
+  style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(2, 1) as version}
-  <div class="border {version}"></div>
+    <div class="border {version}" />
   {/each}
 </div>

@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { range, durationUnitRegex } from "./utils";
-
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let duration = "1.2s";
-  export let unit = "px";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "1.2s";
+  export let size: SpinnerTypes["size"] = "60";
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");
@@ -40,12 +40,10 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --duration: {duration}"
->
+  style="--size: {size}{unit}; --color: {color}; --duration: {duration}">
   {#each range(5, 1) as version}
-  <div
-    class="rect"
-    style="animation-delay: {(version-1)*(durationNum/12)}{durationUnit}"
-  ></div>
+    <div
+      class="rect"
+      style="animation-delay: {(version - 1) * (+durationNum / 12)}{durationUnit}" />
   {/each}
 </div>

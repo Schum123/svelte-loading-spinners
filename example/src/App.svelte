@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     Circle,
     Circle2,
@@ -22,14 +22,14 @@
     Square,
     Moon,
     Plane,
-    Diamonds
+    Diamonds,
   } from "../../src/index";
-  export let name;
+  export let name: any;
 
-  let color = "#FF3E00";
-  let size = "60";
-  let unit = "px";
-  let colorPicker;
+  let color: string = "#FF3E00";
+  let size: string = "60";
+  let unit: string = "px";
+  let colorPicker: any;
 
   function triggerColorPicker() {
     colorPicker.click();
@@ -98,8 +98,8 @@
     position: sticky;
     margin-left: 35px;
     top: 50px;
-	display: inline-block;
-	z-index: 1;
+    display: inline-block;
+    z-index: 1;
   }
 </style>
 
@@ -116,7 +116,6 @@
 </div>
 
 <section>
-
   <div class="spinner-item" title="SpinLine">
     <SpinLine {size} {color} />
     <div class="spinner-title">SpinLine</div>
@@ -136,11 +135,11 @@
     <div class="spinner-title">DoubleBounce</div>
   </div>
   <div class="spinner-item" title="Circle">
-    <Circle {size} {color} {unit} />
+    <Circle />
     <div class="spinner-title">Circle</div>
   </div>
   <div class="spinner-item" title="Stretch">
-    <Stretch {size} {color} />
+    <Stretch {size} {color} {unit} />
     <div class="spinner-title">Stretch</div>
   </div>
   <div class="spinner-item" title="Circle3">
@@ -198,7 +197,7 @@
     <div class="spinner-title">Jellyfish</div>
   </div>
   <div class="spinner-item" title="Chasing">
-    <Chasing {size} {color} {unit} />
+    <Chasing {color} {unit} {size} />
     <div class="spinner-title">Chasing</div>
   </div>
   <div class="spinner-item" title="Shadow">
@@ -218,7 +217,7 @@
     <div class="spinner-title">Plane</div>
   </div>
   <div class="spinner-item" title="Diamonds">
-    <Diamonds {size} {color} />
+    <Diamonds />
     <div class="spinner-title">Diamonds</div>
   </div>
 </section>

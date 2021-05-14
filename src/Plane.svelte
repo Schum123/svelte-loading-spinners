@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
+  import type { SpinnerTypes } from "../src/types/spinner.type";
   import { calculateRgba } from "./utils";
-  export let size = 60;
-  export let color = "#FF3E00";
-  export let unit = "px";
-  export let duration = "1.3s";
+  export let color: SpinnerTypes["color"] = "#FF3E00";
+  export let unit: SpinnerTypes["unit"] = "px";
+  export let duration: SpinnerTypes["duration"] = "1.3s";
+  export let size: SpinnerTypes["size"] = "60";
+  let rgba: string;
   $: rgba = calculateRgba(color, 0.6);
 </script>
 
@@ -51,11 +53,13 @@
   #middle .plane {
     transform: translate3d(0px, 0, 0);
     background: var(--rgba);
-    animation: trans2 var(--duration) linear infinite calc(var(--duration)/4) backwards;
+    animation: trans2 var(--duration) linear infinite calc(var(--duration) / 4)
+      backwards;
   }
   #bottom .plane {
     z-index: 2000;
-    animation: trans3 var(--duration) ease-out infinite calc(var(--duration)/2) backwards;
+    animation: trans3 var(--duration) ease-out infinite
+      calc(var(--duration) / 2) backwards;
   }
   #top {
     width: 53px;
@@ -107,17 +111,16 @@
 
 <div
   class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --rgba: {rgba}; --duration: {duration};"
->
+  style="--size: {size}{unit}; --color: {color}; --rgba: {rgba}; --duration: {duration};">
   <div class="spinner-inner">
     <div id="top" class="mask">
-      <div class="plane"></div>
+      <div class="plane" />
     </div>
     <div id="middle" class="mask">
-      <div class="plane"></div>
+      <div class="plane" />
     </div>
     <div id="bottom" class="mask">
-      <div class="plane"></div>
+      <div class="plane" />
     </div>
   </div>
 </div>
