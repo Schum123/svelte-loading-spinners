@@ -5,13 +5,13 @@
 ## Installation
 
 ```bash
-npm i svelte-loading-spinners
+npm i --save-dev svelte-loading-spinners
 ```
 
 or
 
 ```bash
-yarn add svelte-loading-spinners
+yarn add -D svelte-loading-spinners
 ```
 
 ## Usage
