@@ -11,11 +11,11 @@
     width: var(--size);
     height: calc(var(--size) / 4);
     position: relative;
+    display: block;
   }
   div {
     width: calc(var(--size) / 4);
     height: calc(var(--size) / 4);
-
     position: absolute;
     left: 0;
     top: 0;
