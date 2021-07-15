@@ -21,6 +21,7 @@ import Square from "./Square.svelte";
 import Moon from "./Moon.svelte";
 import Plane from "./Plane.svelte";
 import Diamonds from "./Diamonds.svelte";
+import Clock from "./Clock.svelte";
 
 export {
   Circle,
@@ -46,4 +47,5 @@ export {
   Moon,
   Plane,
   Diamonds,
+  Clock
 };
