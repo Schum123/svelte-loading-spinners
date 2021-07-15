@@ -23,6 +23,7 @@
     Moon,
     Plane,
     Diamonds,
+    Clock
   } from "svelte-loading-spinners";
   export let name: any;
 
@@ -219,5 +220,9 @@
   <div class="spinner-item" title="Diamonds">
     <Diamonds />
     <div class="spinner-title">Diamonds</div>
+  </div>
+  <div class="spinner-item" title="Clock">
+    <Clock />
+    <div class="spinner-title">Clock</div>
   </div>
 </section>
