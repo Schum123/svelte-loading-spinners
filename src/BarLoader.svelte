@@ -38,7 +38,7 @@
   }
   .small-lines.\32 {
     animation: var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1)
-      calc((var(--duration)+0.1) / 2) infinite normal none running short;
+      calc((var(--duration) + 0.1) / 2) infinite normal none running short;
   }
 
   @keyframes long {
