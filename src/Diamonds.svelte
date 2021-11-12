@@ -17,7 +17,7 @@
     width: calc(var(--size) / 4);
     height: calc(var(--size) / 4);
     position: absolute;
-    left: 0;
+    left: 0%;
     top: 0;
     border-radius: 2px;
     background: var(--color);
