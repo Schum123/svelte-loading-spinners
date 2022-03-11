@@ -6,6 +6,7 @@
   export let ballBottomLeft: string = "#40B3FF";
   export let ballBottomRight: string = "#676778";
   export let duration = "1.5s";
+  export let pause = false;
 </script>
 
 <style>
@@ -39,6 +40,9 @@
     border-radius: 50%;
     position: absolute;
     animation: ballOne var(--duration) infinite ease;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
   .ball-top-left {
     background-color: var(--ballTopLeftColor);
@@ -91,18 +95,18 @@
   class="wrapper"
   style="--size: {size}{unit}; --floatSize: {size}; --ballTopLeftColor: {ballTopLeft}; --ballTopRightColor: {ballTopRight}; --ballBottomLeftColor: {ballBottomLeft}; --ballBottomRightColor: {ballBottomRight}; --duration: {duration};">
   <div class="inner">
-    <div class="ball-container">
+    <div class="ball-container" class:pause-animation={pause}>
       <div class="single-ball">
-        <div class="ball ball-top-left">&nbsp;</div>
+        <div class="ball ball-top-left" class:pause-animation={pause}>&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="ball ball-top-right">&nbsp;</div>
+        <div class="ball ball-top-right" class:pause-animation={pause}>&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="ball ball-bottom-left">&nbsp;</div>
+        <div class="ball ball-bottom-left" class:pause-animation={pause}>&nbsp;</div>
       </div>
       <div class="contener_mixte">
-        <div class="ball ball-bottom-right">&nbsp;</div>
+        <div class="ball ball-bottom-right" class:pause-animation={pause}>&nbsp;</div>
       </div>
     </div>
   </div>
