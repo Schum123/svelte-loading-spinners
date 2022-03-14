@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "2.1s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum: any = duration.replace(durationUnitRegex, "");
@@ -28,6 +29,9 @@
     animation-fill-mode: both;
     animation-name: bounce !important;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes bounce {
     0%,
     100% {
@@ -42,7 +46,7 @@
 <div class="wrapper" style="--size: {size}{unit}; --color: {color}">
   {#each range(2, 1) as version}
     <div
-      class="circle"
+      class="circle" class:pause-animation={pause}
       style="animation: {duration} {version === 1 ? `${(durationNum - 0.1) / 2}${durationUnit}` : `0s`} infinite ease-in-out" />
   {/each}
 </div>

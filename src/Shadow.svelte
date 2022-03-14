@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1.7s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -27,6 +28,9 @@
     transform: translateZ(0);
     animation: load var(--duration) infinite ease,
       round var(--duration) infinite ease;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
   @keyframes load {
     0% {
@@ -72,5 +76,5 @@
 <div
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
-  <div class="shadow" />
+  <div class="shadow" class:pause-animation={pause} />
 </div>

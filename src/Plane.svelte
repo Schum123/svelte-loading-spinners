@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1.3s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
   let rgba: string;
   $: rgba = calculateRgba(color, 0.6);
 </script>
@@ -83,6 +84,10 @@
     transform: skew(-15deg, 0);
   }
 
+  .pause-animation .plane {
+    animation-play-state: paused;
+  }
+
   @keyframes trans1 {
     from {
       transform: translate3d(53px, 0, 0);
@@ -112,7 +117,7 @@
 <div
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --rgba: {rgba}; --duration: {duration};">
-  <div class="spinner-inner">
+  <div class="spinner-inner" class:pause-animation={pause}>
     <div id="top" class="mask">
       <div class="plane" />
     </div>

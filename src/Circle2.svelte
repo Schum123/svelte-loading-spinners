@@ -8,6 +8,7 @@
   export let durationOuter: string = `${durationMultiplier * 2}s`;
   export let durationInner: string = `${durationMultiplier * 1.5}s`;
   export let durationCenter: string = `${durationMultiplier * 3}s`;
+  export let pause = false;
 </script>
 
 <style>
@@ -21,15 +22,15 @@
     border-radius: 50%;
     animation: circleSpin var(--durationOuter) linear infinite;
   }
-  .circle:before,
-  .circle:after {
+  .circle::before,
+  .circle::after {
     content: "";
     box-sizing: border-box;
     position: absolute;
     border: 3px solid transparent;
     border-radius: 50%;
   }
-  .circle:after {
+  .circle::after {
     border-top-color: var(--colorInner);
     top: 9px;
     left: 9px;
@@ -37,7 +38,7 @@
     bottom: 9px;
     animation: circleSpin var(--durationInner) linear infinite;
   }
-  .circle:before {
+  .circle::before {
     border-top-color: var(--colorCenter);
     top: 3px;
     left: 3px;
@@ -45,6 +46,12 @@
     bottom: 3px;
     animation: circleSpin var(--durationCenter) linear infinite;
   }
+  .pause-animation,
+  .pause-animation::after,
+  .pause-animation::before {
+    animation-play-state: paused;
+  }
+
   @keyframes circleSpin {
     0% {
       transform: rotate(0deg);
@@ -56,5 +63,5 @@
 </style>
 
 <div
-  class="circle"
+  class="circle" class:pause-animation={pause}
   style="--size: {size}{unit}; --colorInner: {colorInner}; --colorCenter: {colorCenter}; --colorOuter: {colorOuter}; --durationInner: {durationInner}; --durationCenter: {durationCenter}; --durationOuter: {durationOuter};" />

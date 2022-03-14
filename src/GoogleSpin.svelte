@@ -1,10 +1,11 @@
 <script>
   export let size = "40px";
   export let duration = "3s";
+  export let pause = false;
   $: styles = [`width: ${size}`, `height: ${size}`].join(";");
 </script>
 
-<div class="spinner spinner--google" style="--duration: {duration}; {styles}"></div>
+<div class="spinner spinner--google" class:pause-animation={pause} style="--duration: {duration}; {styles}"></div>
 
 <style>
   * {
@@ -19,7 +20,7 @@
     animation: plus-loader-background var(--duration) infinite ease-in-out;
   }
 
-  *:after {
+  *::after {
     background: #f86;
     border-radius: 50% 0 0 50%;
     content: "";
@@ -32,7 +33,7 @@
     animation: plus-loader-top var(--duration) infinite linear;
   }
 
-  *:before {
+  *::before {
     background: #fc6;
     border-radius: 50% 0 0 50%;
     content: "";
@@ -43,6 +44,11 @@
     height: 100%;
     transform-origin: 100% 50%;
     animation: plus-loader-bottom var(--duration) infinite linear;
+  }
+  .pause-animation,
+  .pause-animation::before,
+  .pause-animation::after {
+    animation-play-state: paused;
   }
 
   @keyframes plus-loader-top {

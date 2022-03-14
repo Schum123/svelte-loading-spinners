@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.6s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
   let moonSize: number = +size / 7;
   let top: number = +size / 2 - moonSize / 2;
 </script>
@@ -36,6 +37,9 @@
     border-radius: 100%;
     box-sizing: border-box;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes moonStretchDelay {
     100% {
       transform: rotate(360deg);
@@ -44,8 +48,8 @@
 </style>
 
 <div
-  class="wrapper"
+  class="wrapper" class:pause-animation={pause}
   style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};">
-  <div class="circle-one" />
-  <div class="circle-two" />
+  <div class="circle-one" class:pause-animation={pause} />
+  <div class="circle-two" class:pause-animation={pause} />
 </div>

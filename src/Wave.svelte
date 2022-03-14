@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1.25s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");
@@ -30,6 +31,9 @@
     background-color: var(--color);
     animation: motion var(--duration) ease-in-out infinite;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes motion {
     25% {
       transform: skewY(25deg);
@@ -49,7 +53,7 @@
   style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(10, 0) as version}
     <div
-      class="bar"
+      class="bar" class:pause-animation={pause}
       style="left: {version * (+size / 5 + (+size / 15 - +size / 100)) + unit}; animation-delay: {version * (+durationNum / 8.3)}{durationUnit};" />
   {/each}
 </div>
