@@ -6,7 +6,7 @@
   "main": "dist/index.umd.js",
   "types": "dist/ts/index.d.ts",
   "scripts": {
-    "prebuild": "del ./dist",
+    "prebuild": "rm -rf ./dist",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "prepublishOnly": "npm run build",
