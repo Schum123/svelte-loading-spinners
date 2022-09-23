@@ -31,7 +31,7 @@ The default props; `unit` is `px`, `color` is `#FF3E00` and `size` `60px`.
 
 Notes:
 
-`Circle2` has `colorOuter`, `colorCenter`, `colorInner` as props aswell.
+`Circle2` instead of the `color` and `duration` props has `colorOuter`, `colorCenter`, `colorInner`, `durationOuter`, `durationCenter`, `durationInner` props.
 
 `Circle3` has `ballTopLeft`, `ballTopRight`, `ballBottomLeft` and `ballBottomRight` as props aswell.
 
