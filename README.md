@@ -26,7 +26,7 @@ yarn add -D svelte-loading-spinners
 
 ## List of available spinners
 
-Props: `size`, `color`, `unit` and `duration`.
+Props: `size`, `color`, `unit`, `duration` and `pause`.
 The default props; `unit` is `px`, `color` is `#FF3E00` and `size` `60px`.
 
 Notes:
