@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "2.1s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
   let rgba: string;
   $: rgba = calculateRgba(color, 0.2);
 </script>
@@ -40,6 +41,9 @@
     animation: var(--duration) cubic-bezier(0.165, 0.84, 0.44, 1)
       calc((var(--duration) + 0.1) / 2) infinite normal none running short;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
 
   @keyframes long {
     0% {
@@ -74,7 +78,7 @@
 <div class="wrapper" style="--size: {size}{unit}; --rgba:{rgba}">
   {#each range(2, 1) as version}
     <div
-      class="lines small-lines {version}"
+      class="lines small-lines {version}" class:pause-animation={pause}
       style="--color: {color}; --duration: {duration};" />
   {/each}
 </div>

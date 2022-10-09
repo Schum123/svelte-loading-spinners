@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "3s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -25,6 +26,9 @@
     border-style: solid;
     animation: var(--duration) ease-in-out 0s infinite normal none running
       rotate;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
   @keyframes rotate {
     0% {
@@ -49,5 +53,5 @@
 <div
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
-  <div class="rainbow" />
+  <div class="rainbow" class:pause-animation={pause} />
 </div>

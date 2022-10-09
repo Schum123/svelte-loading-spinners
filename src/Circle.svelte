@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.75s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -17,6 +18,9 @@
     border-radius: 50%;
     animation: var(--duration) linear 0s infinite normal none running rotate;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes rotate {
     0% {
       transform: rotate(0);
@@ -28,5 +32,5 @@
 </style>
 
 <div
-  class="circle"
+  class="circle" class:pause-animation={pause}
   style="--size: {size}{unit}; --color: {color}; --duration: {duration}" />

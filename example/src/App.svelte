@@ -32,6 +32,8 @@
   let unit: string = "px";
   let colorPicker: any;
 
+  let pause = false;
+
   function triggerColorPicker() {
     colorPicker.click();
   }

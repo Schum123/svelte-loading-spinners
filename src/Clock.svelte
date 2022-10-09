@@ -4,6 +4,7 @@
     export let unit: SpinnerTypes["unit"] = "px";
     export let duration: SpinnerTypes["duration"] = "8s";
     export let size: SpinnerTypes["size"] = "60";
+    export let pause = false;
 </script>
 
 <style>
@@ -16,12 +17,12 @@
         border-radius: 50%;
     }
     div::before,
-    div:after {
+    div::after {
         position: absolute;
         content: "";
         background-color: var(--color);
     }
-    div:after {
+    div::after {
         width: calc(var(--size) / 2.4);
         height: 2px;
         top: calc(var(--size) / 2);
@@ -29,13 +30,18 @@
         transform-origin: 1px 1px;
         animation: rotate calc(var(--duration) / 4) linear infinite;
     }
-    div:before {
+    div::before {
         width: calc(var(--size) / 3);
         height: 2px;
         top: calc((var(--size) / 2));
         left: calc((var(--size) / 2));
         transform-origin: 1px 1px;
         animation: rotate var(--duration) linear infinite;
+    }
+    .pause-animation,
+    .pause-animation::before,
+    .pause-animation::after {
+        animation-play-state: paused;
     }
     @keyframes rotate {
         100% {
@@ -44,4 +50,4 @@
     }
 </style>
 
-<div style="--size: {size}{unit}; --color:{color}; --duration:{duration}" />
+<div style="--size: {size}{unit}; --color:{color}; --duration:{duration}" class:pause-animation={pause} />

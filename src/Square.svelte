@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "3s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -16,6 +17,9 @@
     animation-fill-mode: both;
     perspective: 100px;
     display: inline-block;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
   @keyframes squareDelay {
     25% {
@@ -38,5 +42,5 @@
 </style>
 
 <div
-  class="square"
+  class="square" class:pause-animation={pause}
   style="--size: {size}{unit}; --color: {color}; --duration: {duration};" />

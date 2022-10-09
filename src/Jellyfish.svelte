@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "2.5s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum: any = duration.replace(durationUnitRegex, "");
 </script>
@@ -25,6 +26,9 @@
     background-color: transparent;
     animation: motion var(--duration) ease infinite;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes motion {
     0% {
       transform: translateY(var(--motionOne));
@@ -43,7 +47,7 @@
   style="--size: {size}{unit}; --color: {color}; --motionOne: {-size / 5}{unit}; --motionTwo: {+size / 4}{unit}; --motionThree: {-size / 5}{unit}; --duration: {duration};">
   {#each range(6, 0) as version}
     <div
-      class="ring"
+      class="ring" class:pause-animation={pause}
       style="animation-delay: {version * (durationNum / 25)}{durationUnit}; width: {version * (+size / 6) + unit}; height: {(version * (+size / 6)) / 2 + unit}; " />
   {/each}
 </div>

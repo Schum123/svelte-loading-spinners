@@ -5,6 +5,7 @@
   export let duration: SpinnerTypes["duration"] = "4s";
   export let size: SpinnerTypes["size"] = "60";
   export let stroke = +size / 12 + unit;
+  export let pause = false;
 </script>
 
 <style>
@@ -23,6 +24,9 @@
     border-radius: var(--stroke);
     transform-origin: center center;
     animation: spineLine var(--duration) ease infinite;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
   @keyframes spineLine {
     0% {
@@ -84,5 +88,5 @@
 <div
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --stroke: {stroke}; --floatSize: {size}; --duration: {duration}">
-  <div class="line" />
+  <div class="line" class:pause-animation={pause} />
 </div>
