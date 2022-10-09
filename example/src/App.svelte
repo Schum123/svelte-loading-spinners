@@ -23,8 +23,8 @@
     Moon,
     Plane,
     Diamonds,
-    Clock
-  } from "svelte-loading-spinners";
+    Clock,
+  } from "../../src/index";
   export let name: any;
 
   let color: string = "#FF3E00";

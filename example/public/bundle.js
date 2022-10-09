@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var app = (function () {
     'use strict';
 
@@ -27,7 +27,6 @@ var app = (function () {
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
-
     function append(target, node) {
         target.appendChild(node);
     }
@@ -69,11 +68,16 @@ var app = (function () {
         input.value = value == null ? '' : value;
     }
     function set_style(node, key, value, important) {
-        node.style.setProperty(key, value, important ? 'important' : '');
+        if (value === null) {
+            node.style.removeProperty(key);
+        }
+        else {
+            node.style.setProperty(key, value, important ? 'important' : '');
+        }
     }
-    function custom_event(type, detail) {
+    function custom_event(type, detail, { bubbles = false, cancelable = false } = {}) {
         const e = document.createEvent('CustomEvent');
-        e.initCustomEvent(type, false, false, detail);
+        e.initCustomEvent(type, bubbles, cancelable, detail);
         return e;
     }
 
@@ -97,22 +101,40 @@ var app = (function () {
     function add_render_callback(fn) {
         render_callbacks.push(fn);
     }
-    let flushing = false;
+    // flush() calls callbacks in this order:
+    // 1. All beforeUpdate callbacks, in order: parents before children
+    // 2. All bind:this callbacks, in reverse order: children before parents.
+    // 3. All afterUpdate callbacks, in order: parents before children. EXCEPT
+    //    for afterUpdates called during the initial onMount, which are called in
+    //    reverse order: children before parents.
+    // Since callbacks might update component values, which could trigger another
+    // call to flush(), the following steps guard against this:
+    // 1. During beforeUpdate, any updated components will be added to the
+    //    dirty_components array and will cause a reentrant call to flush(). Because
+    //    the flush index is kept outside the function, the reentrant call will pick
+    //    up where the earlier call left off and go through all dirty components. The
+    //    current_component value is saved and restored so that the reentrant call will
+    //    not interfere with the "parent" flush() call.
+    // 2. bind:this callbacks cannot trigger new flush() calls.
+    // 3. During afterUpdate, any updated components will NOT have their afterUpdate
+    //    callback called a second time; the seen_callbacks set, outside the flush()
+    //    function, guarantees this behavior.
     const seen_callbacks = new Set();
+    let flushidx = 0; // Do *not* move this inside the flush() function
     function flush() {
-        if (flushing)
-            return;
-        flushing = true;
+        const saved_component = current_component;
         do {
             // first, call beforeUpdate functions
             // and update components
-            for (let i = 0; i < dirty_components.length; i += 1) {
-                const component = dirty_components[i];
+            while (flushidx < dirty_components.length) {
+                const component = dirty_components[flushidx];
+                flushidx++;
                 set_current_component(component);
                 update(component.$$);
             }
             set_current_component(null);
             dirty_components.length = 0;
+            flushidx = 0;
             while (binding_callbacks.length)
                 binding_callbacks.pop()();
             // then, once components are updated, call
@@ -132,8 +154,8 @@ var app = (function () {
             flush_callbacks.pop()();
         }
         update_scheduled = false;
-        flushing = false;
         seen_callbacks.clear();
+        set_current_component(saved_component);
     }
     function update($$) {
         if ($$.fragment !== null) {
@@ -167,6 +189,9 @@ var app = (function () {
                 }
             });
             block.o(local);
+        }
+        else if (callback) {
+            callback();
         }
     }
     function create_component(block) {
@@ -211,7 +236,7 @@ var app = (function () {
         }
         component.$$.dirty[(i / 31) | 0] |= (1 << (i % 31));
     }
-    function init(component, options, instance, create_fragment, not_equal, props, dirty = [-1]) {
+    function init(component, options, instance, create_fragment, not_equal, props, append_styles, dirty = [-1]) {
         const parent_component = current_component;
         set_current_component(component);
         const $$ = component.$$ = {
@@ -228,12 +253,14 @@ var app = (function () {
             on_disconnect: [],
             before_update: [],
             after_update: [],
-            context: new Map(parent_component ? parent_component.$$.context : options.context || []),
+            context: new Map(options.context || (parent_component ? parent_component.$$.context : [])),
             // everything else
             callbacks: blank_object(),
             dirty,
-            skip_bound: false
+            skip_bound: false,
+            root: options.target || parent_component.$$.root
         };
+        append_styles && append_styles($$.root);
         let ready = false;
         $$.ctx = instance
             ? instance(component, options.props || {}, (i, ret, ...rest) => {
@@ -297,7 +324,7 @@ var app = (function () {
     }
 
     function dispatch_dev(type, detail) {
-        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.38.2' }, detail)));
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.50.1' }, detail), { bubbles: true }));
     }
     function append_dev(target, node) {
         dispatch_dev('SvelteDOMInsert', { target, node });
@@ -374,9 +401,9 @@ var app = (function () {
         $inject_state() { }
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Circle.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Circle.svelte generated by Svelte v3.50.1 */
 
-    const file$o = "node_modules\\svelte-loading-spinners\\dist\\Circle.svelte";
+    const file$o = "..\\src\\Circle.svelte";
 
     function create_fragment$o(ctx) {
     	let div;
@@ -388,7 +415,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$o, 28, 0, 626);
+    			add_location(div, file$o, 27, 0, 633);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -429,32 +456,31 @@ var app = (function () {
 
     function instance$o($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Circle", slots, []);
-    	
+    	validate_slots('Circle', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "0.75s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Circle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Circle> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -510,9 +536,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Circle2.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Circle2.svelte generated by Svelte v3.50.1 */
 
-    const file$n = "node_modules\\svelte-loading-spinners\\dist\\Circle2.svelte";
+    const file$n = "..\\src\\Circle2.svelte";
 
     function create_fragment$n(ctx) {
     	let div;
@@ -528,7 +554,7 @@ var app = (function () {
     			set_style(div, "--durationInner", /*durationInner*/ ctx[6]);
     			set_style(div, "--durationCenter", /*durationCenter*/ ctx[7]);
     			set_style(div, "--durationOuter", /*durationOuter*/ ctx[5]);
-    			add_location(div, file$n, 56, 0, 1412);
+    			add_location(div, file$n, 56, 0, 1422);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -585,7 +611,7 @@ var app = (function () {
 
     function instance$n($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Circle2", slots, []);
+    	validate_slots('Circle2', slots, []);
     	let { size = "60" } = $$props;
     	let { unit = "px" } = $$props;
     	let { colorOuter = "#FF3E00" } = $$props;
@@ -597,31 +623,31 @@ var app = (function () {
     	let { durationCenter = `${durationMultiplier * 3}s` } = $$props;
 
     	const writable_props = [
-    		"size",
-    		"unit",
-    		"colorOuter",
-    		"colorCenter",
-    		"colorInner",
-    		"durationMultiplier",
-    		"durationOuter",
-    		"durationInner",
-    		"durationCenter"
+    		'size',
+    		'unit',
+    		'colorOuter',
+    		'colorCenter',
+    		'colorInner',
+    		'durationMultiplier',
+    		'durationOuter',
+    		'durationInner',
+    		'durationCenter'
     	];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Circle2> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Circle2> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("colorOuter" in $$props) $$invalidate(2, colorOuter = $$props.colorOuter);
-    		if ("colorCenter" in $$props) $$invalidate(3, colorCenter = $$props.colorCenter);
-    		if ("colorInner" in $$props) $$invalidate(4, colorInner = $$props.colorInner);
-    		if ("durationMultiplier" in $$props) $$invalidate(8, durationMultiplier = $$props.durationMultiplier);
-    		if ("durationOuter" in $$props) $$invalidate(5, durationOuter = $$props.durationOuter);
-    		if ("durationInner" in $$props) $$invalidate(6, durationInner = $$props.durationInner);
-    		if ("durationCenter" in $$props) $$invalidate(7, durationCenter = $$props.durationCenter);
+    		if ('size' in $$props) $$invalidate(0, size = $$props.size);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('colorOuter' in $$props) $$invalidate(2, colorOuter = $$props.colorOuter);
+    		if ('colorCenter' in $$props) $$invalidate(3, colorCenter = $$props.colorCenter);
+    		if ('colorInner' in $$props) $$invalidate(4, colorInner = $$props.colorInner);
+    		if ('durationMultiplier' in $$props) $$invalidate(8, durationMultiplier = $$props.durationMultiplier);
+    		if ('durationOuter' in $$props) $$invalidate(5, durationOuter = $$props.durationOuter);
+    		if ('durationInner' in $$props) $$invalidate(6, durationInner = $$props.durationInner);
+    		if ('durationCenter' in $$props) $$invalidate(7, durationCenter = $$props.durationCenter);
     	};
 
     	$$self.$capture_state = () => ({
@@ -637,15 +663,15 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("colorOuter" in $$props) $$invalidate(2, colorOuter = $$props.colorOuter);
-    		if ("colorCenter" in $$props) $$invalidate(3, colorCenter = $$props.colorCenter);
-    		if ("colorInner" in $$props) $$invalidate(4, colorInner = $$props.colorInner);
-    		if ("durationMultiplier" in $$props) $$invalidate(8, durationMultiplier = $$props.durationMultiplier);
-    		if ("durationOuter" in $$props) $$invalidate(5, durationOuter = $$props.durationOuter);
-    		if ("durationInner" in $$props) $$invalidate(6, durationInner = $$props.durationInner);
-    		if ("durationCenter" in $$props) $$invalidate(7, durationCenter = $$props.durationCenter);
+    		if ('size' in $$props) $$invalidate(0, size = $$props.size);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('colorOuter' in $$props) $$invalidate(2, colorOuter = $$props.colorOuter);
+    		if ('colorCenter' in $$props) $$invalidate(3, colorCenter = $$props.colorCenter);
+    		if ('colorInner' in $$props) $$invalidate(4, colorInner = $$props.colorInner);
+    		if ('durationMultiplier' in $$props) $$invalidate(8, durationMultiplier = $$props.durationMultiplier);
+    		if ('durationOuter' in $$props) $$invalidate(5, durationOuter = $$props.durationOuter);
+    		if ('durationInner' in $$props) $$invalidate(6, durationInner = $$props.durationInner);
+    		if ('durationCenter' in $$props) $$invalidate(7, durationCenter = $$props.durationCenter);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -762,9 +788,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Circle3.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Circle3.svelte generated by Svelte v3.50.1 */
 
-    const file$m = "node_modules\\svelte-loading-spinners\\dist\\Circle3.svelte";
+    const file$m = "..\\src\\Circle3.svelte";
 
     function create_fragment$m(ctx) {
     	let div10;
@@ -803,25 +829,25 @@ var app = (function () {
     			div6 = element("div");
     			div6.textContent = " ";
     			attr_dev(div0, "class", "ball ball-top-left svelte-1vf8im1");
-    			add_location(div0, file$m, 94, 8, 2166);
+    			add_location(div0, file$m, 94, 8, 2176);
     			attr_dev(div1, "class", "single-ball svelte-1vf8im1");
-    			add_location(div1, file$m, 93, 6, 2131);
+    			add_location(div1, file$m, 93, 6, 2141);
     			attr_dev(div2, "class", "ball ball-top-right svelte-1vf8im1");
-    			add_location(div2, file$m, 97, 8, 2270);
+    			add_location(div2, file$m, 97, 8, 2280);
     			attr_dev(div3, "class", "contener_mixte");
-    			add_location(div3, file$m, 96, 6, 2232);
+    			add_location(div3, file$m, 96, 6, 2242);
     			attr_dev(div4, "class", "ball ball-bottom-left svelte-1vf8im1");
-    			add_location(div4, file$m, 100, 8, 2375);
+    			add_location(div4, file$m, 100, 8, 2385);
     			attr_dev(div5, "class", "contener_mixte");
-    			add_location(div5, file$m, 99, 6, 2337);
+    			add_location(div5, file$m, 99, 6, 2347);
     			attr_dev(div6, "class", "ball ball-bottom-right svelte-1vf8im1");
-    			add_location(div6, file$m, 103, 8, 2482);
+    			add_location(div6, file$m, 103, 8, 2492);
     			attr_dev(div7, "class", "contener_mixte");
-    			add_location(div7, file$m, 102, 6, 2444);
+    			add_location(div7, file$m, 102, 6, 2454);
     			attr_dev(div8, "class", "ball-container svelte-1vf8im1");
-    			add_location(div8, file$m, 92, 4, 2095);
+    			add_location(div8, file$m, 92, 4, 2105);
     			attr_dev(div9, "class", "inner svelte-1vf8im1");
-    			add_location(div9, file$m, 91, 2, 2070);
+    			add_location(div9, file$m, 91, 2, 2080);
     			attr_dev(div10, "class", "wrapper svelte-1vf8im1");
     			set_style(div10, "--size", /*size*/ ctx[0] + /*unit*/ ctx[1]);
     			set_style(div10, "--floatSize", /*size*/ ctx[0]);
@@ -830,7 +856,7 @@ var app = (function () {
     			set_style(div10, "--ballBottomLeftColor", /*ballBottomLeft*/ ctx[4]);
     			set_style(div10, "--ballBottomRightColor", /*ballBottomRight*/ ctx[5]);
     			set_style(div10, "--duration", /*duration*/ ctx[6]);
-    			add_location(div10, file$m, 88, 0, 1808);
+    			add_location(div10, file$m, 88, 0, 1818);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -900,7 +926,7 @@ var app = (function () {
 
     function instance$m($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Circle3", slots, []);
+    	validate_slots('Circle3', slots, []);
     	let { size = "60" } = $$props;
     	let { unit = "px" } = $$props;
     	let { ballTopLeft = "#FF3E00" } = $$props;
@@ -910,27 +936,27 @@ var app = (function () {
     	let { duration = "1.5s" } = $$props;
 
     	const writable_props = [
-    		"size",
-    		"unit",
-    		"ballTopLeft",
-    		"ballTopRight",
-    		"ballBottomLeft",
-    		"ballBottomRight",
-    		"duration"
+    		'size',
+    		'unit',
+    		'ballTopLeft',
+    		'ballTopRight',
+    		'ballBottomLeft',
+    		'ballBottomRight',
+    		'duration'
     	];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Circle3> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Circle3> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("ballTopLeft" in $$props) $$invalidate(2, ballTopLeft = $$props.ballTopLeft);
-    		if ("ballTopRight" in $$props) $$invalidate(3, ballTopRight = $$props.ballTopRight);
-    		if ("ballBottomLeft" in $$props) $$invalidate(4, ballBottomLeft = $$props.ballBottomLeft);
-    		if ("ballBottomRight" in $$props) $$invalidate(5, ballBottomRight = $$props.ballBottomRight);
-    		if ("duration" in $$props) $$invalidate(6, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(0, size = $$props.size);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('ballTopLeft' in $$props) $$invalidate(2, ballTopLeft = $$props.ballTopLeft);
+    		if ('ballTopRight' in $$props) $$invalidate(3, ballTopRight = $$props.ballTopRight);
+    		if ('ballBottomLeft' in $$props) $$invalidate(4, ballBottomLeft = $$props.ballBottomLeft);
+    		if ('ballBottomRight' in $$props) $$invalidate(5, ballBottomRight = $$props.ballBottomRight);
+    		if ('duration' in $$props) $$invalidate(6, duration = $$props.duration);
     	};
 
     	$$self.$capture_state = () => ({
@@ -944,13 +970,13 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(0, size = $$props.size);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("ballTopLeft" in $$props) $$invalidate(2, ballTopLeft = $$props.ballTopLeft);
-    		if ("ballTopRight" in $$props) $$invalidate(3, ballTopRight = $$props.ballTopRight);
-    		if ("ballBottomLeft" in $$props) $$invalidate(4, ballBottomLeft = $$props.ballBottomLeft);
-    		if ("ballBottomRight" in $$props) $$invalidate(5, ballBottomRight = $$props.ballBottomRight);
-    		if ("duration" in $$props) $$invalidate(6, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(0, size = $$props.size);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('ballTopLeft' in $$props) $$invalidate(2, ballTopLeft = $$props.ballTopLeft);
+    		if ('ballTopRight' in $$props) $$invalidate(3, ballTopRight = $$props.ballTopRight);
+    		if ('ballBottomLeft' in $$props) $$invalidate(4, ballBottomLeft = $$props.ballBottomLeft);
+    		if ('ballBottomRight' in $$props) $$invalidate(5, ballBottomRight = $$props.ballBottomRight);
+    		if ('duration' in $$props) $$invalidate(6, duration = $$props.duration);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1048,24 +1074,31 @@ var app = (function () {
     }
 
     const durationUnitRegex = /[a-zA-Z]/;
+
     const calculateRgba = (color, opacity) => {
-        if (color[0] === "#") {
-            color = color.slice(1);
-        }
-        if (color.length === 3) {
-            let res = "";
-            color.split("").forEach((c) => {
-                res += c;
-                res += c;
-            });
-            color = res;
-        }
-        const rgbValues = (color.match(/.{2}/g) || [])
-            .map((hex) => parseInt(hex, 16))
-            .join(", ");
-        return `rgba(${rgbValues}, ${opacity})`;
+      if (color[0] === "#") {
+        color = color.slice(1);
+      }
+
+      if (color.length === 3) {
+        let res = "";
+        color.split("").forEach((c) => {
+          res += c;
+          res += c;
+        });
+        color = res;
+      }
+
+      const rgbValues = (color.match(/.{2}/g) || [])
+        .map((hex) => parseInt(hex, 16))
+        .join(", ");
+
+      return `rgba(${rgbValues}, ${opacity})`;
     };
-    const range = (size, startAt = 0) => [...Array(size).keys()].map(i => i + startAt);
+
+    const range = (size, startAt = 0) =>
+      [...Array(size).keys()].map(i => i + startAt);
+
     // export const characterRange = (startChar, endChar) =>
     //   String.fromCharCode(
     //     ...range(
@@ -1073,11 +1106,12 @@ var app = (function () {
     //       startChar.charCodeAt(0)
     //     )
     //   );
+
     // export const zip = (arr, ...arrs) =>
     //   arr.map((val, i) => arrs.reduce((list, curr) => [...list, curr[i]], [val]));
 
-    /* node_modules\svelte-loading-spinners\dist\DoubleBounce.svelte generated by Svelte v3.38.2 */
-    const file$l = "node_modules\\svelte-loading-spinners\\dist\\DoubleBounce.svelte";
+    /* ..\src\DoubleBounce.svelte generated by Svelte v3.50.1 */
+    const file$l = "..\\src\\DoubleBounce.svelte";
 
     function get_each_context$9(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -1085,7 +1119,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (41:2) {#each range(2, 1) as version}
+    // (40:2) {#each range(2, 1) as version}
     function create_each_block$9(ctx) {
     	let div;
 
@@ -1098,7 +1132,7 @@ var app = (function () {
     			? `${(/*durationNum*/ ctx[5] - 0.1) / 2}${/*durationUnit*/ ctx[4]}`
     			: `0s`) + " infinite ease-in-out");
 
-    			add_location(div, file$l, 41, 4, 936);
+    			add_location(div, file$l, 40, 4, 943);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1119,7 +1153,7 @@ var app = (function () {
     		block,
     		id: create_each_block$9.name,
     		type: "each",
-    		source: "(41:2) {#each range(2, 1) as version}",
+    		source: "(40:2) {#each range(2, 1) as version}",
     		ctx
     	});
 
@@ -1147,7 +1181,7 @@ var app = (function () {
     			attr_dev(div, "class", "wrapper svelte-h1a2xs");
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
-    			add_location(div, file$l, 39, 0, 828);
+    			add_location(div, file$l, 38, 0, 835);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1213,25 +1247,24 @@ var app = (function () {
 
     function instance$l($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("DoubleBounce", slots, []);
-    	
+    	validate_slots('DoubleBounce', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "2.1s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<DoubleBounce> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<DoubleBounce> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1246,12 +1279,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1307,9 +1340,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\GoogleSpin.svelte generated by Svelte v3.38.2 */
+    /* ..\src\GoogleSpin.svelte generated by Svelte v3.50.1 */
 
-    const file$k = "node_modules\\svelte-loading-spinners\\dist\\GoogleSpin.svelte";
+    const file$k = "..\\src\\GoogleSpin.svelte";
 
     function create_fragment$k(ctx) {
     	let div;
@@ -1354,26 +1387,26 @@ var app = (function () {
     function instance$k($$self, $$props, $$invalidate) {
     	let styles;
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("GoogleSpin", slots, []);
+    	validate_slots('GoogleSpin', slots, []);
     	let { size = "40px" } = $$props;
     	let { duration = "3s" } = $$props;
-    	const writable_props = ["size", "duration"];
+    	const writable_props = ['size', 'duration'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<GoogleSpin> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<GoogleSpin> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("duration" in $$props) $$invalidate(0, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(2, size = $$props.size);
+    		if ('duration' in $$props) $$invalidate(0, duration = $$props.duration);
     	};
 
     	$$self.$capture_state = () => ({ size, duration, styles });
 
     	$$self.$inject_state = $$props => {
-    		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-    		if ("duration" in $$props) $$invalidate(0, duration = $$props.duration);
-    		if ("styles" in $$props) $$invalidate(1, styles = $$props.styles);
+    		if ('size' in $$props) $$invalidate(2, size = $$props.size);
+    		if ('duration' in $$props) $$invalidate(0, duration = $$props.duration);
+    		if ('styles' in $$props) $$invalidate(1, styles = $$props.styles);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1419,9 +1452,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\ScaleOut.svelte generated by Svelte v3.38.2 */
+    /* ..\src\ScaleOut.svelte generated by Svelte v3.50.1 */
 
-    const file$j = "node_modules\\svelte-loading-spinners\\dist\\ScaleOut.svelte";
+    const file$j = "..\\src\\ScaleOut.svelte";
 
     function create_fragment$j(ctx) {
     	let div1;
@@ -1432,13 +1465,13 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			attr_dev(div0, "class", "circle svelte-9juun5");
-    			add_location(div0, file$j, 35, 2, 758);
+    			add_location(div0, file$j, 34, 2, 765);
     			attr_dev(div1, "class", "wrapper svelte-9juun5");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$j, 32, 0, 631);
+    			add_location(div1, file$j, 31, 0, 638);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1484,32 +1517,31 @@ var app = (function () {
 
     function instance$j($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("ScaleOut", slots, []);
-    	
+    	validate_slots('ScaleOut', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<ScaleOut> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<ScaleOut> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1565,9 +1597,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\SpinLine.svelte generated by Svelte v3.38.2 */
+    /* ..\src\SpinLine.svelte generated by Svelte v3.50.1 */
 
-    const file$i = "node_modules\\svelte-loading-spinners\\dist\\SpinLine.svelte";
+    const file$i = "..\\src\\SpinLine.svelte";
 
     function create_fragment$i(ctx) {
     	let div1;
@@ -1578,14 +1610,14 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			attr_dev(div0, "class", "line svelte-1wp57lu");
-    			add_location(div0, file$i, 85, 2, 1719);
+    			add_location(div0, file$i, 84, 2, 1726);
     			attr_dev(div1, "class", "wrapper svelte-1wp57lu");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--stroke", /*stroke*/ ctx[4]);
     			set_style(div1, "--floatSize", /*size*/ ctx[3]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$i, 82, 0, 1576);
+    			add_location(div1, file$i, 81, 0, 1583);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1635,35 +1667,34 @@ var app = (function () {
 
     function instance$i($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("SpinLine", slots, []);
-    	
+    	validate_slots('SpinLine', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "4s" } = $$props;
     	let { size = "60" } = $$props;
     	let { stroke = +size / 12 + unit } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size", "stroke"];
+    	const writable_props = ['color', 'unit', 'duration', 'size', 'stroke'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<SpinLine> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<SpinLine> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("stroke" in $$props) $$invalidate(4, stroke = $$props.stroke);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('stroke' in $$props) $$invalidate(4, stroke = $$props.stroke);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size, stroke });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("stroke" in $$props) $$invalidate(4, stroke = $$props.stroke);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('stroke' in $$props) $$invalidate(4, stroke = $$props.stroke);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1734,8 +1765,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Stretch.svelte generated by Svelte v3.38.2 */
-    const file$h = "node_modules\\svelte-loading-spinners\\dist\\Stretch.svelte";
+    /* ..\src\Stretch.svelte generated by Svelte v3.50.1 */
+    const file$h = "..\\src\\Stretch.svelte";
 
     function get_each_context$8(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -1743,7 +1774,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (42:2) {#each range(5, 1) as version}
+    // (41:2) {#each range(5, 1) as version}
     function create_each_block$8(ctx) {
     	let div;
 
@@ -1752,7 +1783,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "rect svelte-1uxpkwt");
     			set_style(div, "animation-delay", (/*version*/ ctx[6] - 1) * (+/*durationNum*/ ctx[5] / 12) + /*durationUnit*/ ctx[4]);
-    			add_location(div, file$h, 42, 4, 959);
+    			add_location(div, file$h, 41, 4, 966);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1767,7 +1798,7 @@ var app = (function () {
     		block,
     		id: create_each_block$8.name,
     		type: "each",
-    		source: "(42:2) {#each range(5, 1) as version}",
+    		source: "(41:2) {#each range(5, 1) as version}",
     		ctx
     	});
 
@@ -1796,7 +1827,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$h, 38, 0, 821);
+    			add_location(div, file$h, 37, 0, 828);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1866,25 +1897,24 @@ var app = (function () {
 
     function instance$h($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Stretch", slots, []);
-    	
+    	validate_slots('Stretch', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.2s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Stretch> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Stretch> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1899,12 +1929,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1960,8 +1990,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\BarLoader.svelte generated by Svelte v3.38.2 */
-    const file$g = "node_modules\\svelte-loading-spinners\\dist\\BarLoader.svelte";
+    /* ..\src\BarLoader.svelte generated by Svelte v3.50.1 */
+    const file$g = "..\\src\\BarLoader.svelte";
 
     function get_each_context$7(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -1969,17 +1999,17 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (74:2) {#each range(2, 1) as version}
+    // (73:2) {#each range(2, 1) as version}
     function create_each_block$7(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "lines small-lines " + /*version*/ ctx[5] + " svelte-vhcw6");
+    			attr_dev(div, "class", "lines small-lines " + /*version*/ ctx[5] + " svelte-13j1pmo");
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$g, 74, 4, 1591);
+    			add_location(div, file$g, 73, 4, 1600);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2002,7 +2032,7 @@ var app = (function () {
     		block,
     		id: create_each_block$7.name,
     		type: "each",
-    		source: "(74:2) {#each range(2, 1) as version}",
+    		source: "(73:2) {#each range(2, 1) as version}",
     		ctx
     	});
 
@@ -2027,10 +2057,10 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "wrapper svelte-vhcw6");
+    			attr_dev(div, "class", "wrapper svelte-13j1pmo");
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--rgba", /*rgba*/ ctx[4]);
-    			add_location(div, file$g, 72, 0, 1486);
+    			add_location(div, file$g, 71, 0, 1495);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2096,24 +2126,23 @@ var app = (function () {
 
     function instance$g($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("BarLoader", slots, []);
-    	
+    	validate_slots('BarLoader', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "2.1s" } = $$props;
     	let { size = "60" } = $$props;
     	let rgba;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<BarLoader> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<BarLoader> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2127,11 +2156,11 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("rgba" in $$props) $$invalidate(4, rgba = $$props.rgba);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('rgba' in $$props) $$invalidate(4, rgba = $$props.rgba);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2193,8 +2222,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Jumper.svelte generated by Svelte v3.38.2 */
-    const file$f = "node_modules\\svelte-loading-spinners\\dist\\Jumper.svelte";
+    /* ..\src\Jumper.svelte generated by Svelte v3.50.1 */
+    const file$f = "..\\src\\Jumper.svelte";
 
     function get_each_context$6(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -2202,7 +2231,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (44:2) {#each range(3, 1) as version}
+    // (43:2) {#each range(3, 1) as version}
     function create_each_block$6(ctx) {
     	let div;
 
@@ -2211,7 +2240,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "circle svelte-1cy66mt");
     			set_style(div, "animation-delay", /*durationNum*/ ctx[5] / 3 * (/*version*/ ctx[6] - 1) + /*durationUnit*/ ctx[4]);
-    			add_location(div, file$f, 44, 4, 991);
+    			add_location(div, file$f, 43, 4, 998);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2226,7 +2255,7 @@ var app = (function () {
     		block,
     		id: create_each_block$6.name,
     		type: "each",
-    		source: "(44:2) {#each range(3, 1) as version}",
+    		source: "(43:2) {#each range(3, 1) as version}",
     		ctx
     	});
 
@@ -2255,7 +2284,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$f, 40, 0, 852);
+    			add_location(div, file$f, 39, 0, 859);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2325,25 +2354,24 @@ var app = (function () {
 
     function instance$f($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Jumper", slots, []);
-    	
+    	validate_slots('Jumper', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Jumper> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Jumper> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2358,12 +2386,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2419,8 +2447,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\RingLoader.svelte generated by Svelte v3.38.2 */
-    const file$e = "node_modules\\svelte-loading-spinners\\dist\\RingLoader.svelte";
+    /* ..\src\RingLoader.svelte generated by Svelte v3.50.1 */
+    const file$e = "..\\src\\RingLoader.svelte";
 
     function get_each_context$5(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -2428,7 +2456,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (57:2) {#each range(2, 1) as version}
+    // (56:2) {#each range(2, 1) as version}
     function create_each_block$5(ctx) {
     	let div;
 
@@ -2436,7 +2464,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "border " + /*version*/ ctx[4] + " svelte-17ey38u");
-    			add_location(div, file$e, 57, 4, 1321);
+    			add_location(div, file$e, 56, 4, 1328);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2451,7 +2479,7 @@ var app = (function () {
     		block,
     		id: create_each_block$5.name,
     		type: "each",
-    		source: "(57:2) {#each range(2, 1) as version}",
+    		source: "(56:2) {#each range(2, 1) as version}",
     		ctx
     	});
 
@@ -2480,7 +2508,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$e, 53, 0, 1182);
+    			add_location(div, file$e, 52, 0, 1189);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2550,32 +2578,31 @@ var app = (function () {
 
     function instance$e($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("RingLoader", slots, []);
-    	
+    	validate_slots('RingLoader', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "2s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<RingLoader> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<RingLoader> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ range, color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2631,8 +2658,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\SyncLoader.svelte generated by Svelte v3.38.2 */
-    const file$d = "node_modules\\svelte-loading-spinners\\dist\\SyncLoader.svelte";
+    /* ..\src\SyncLoader.svelte generated by Svelte v3.50.1 */
+    const file$d = "..\\src\\SyncLoader.svelte";
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -2640,7 +2667,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (61:2) {#each range(3, 1) as i}
+    // (60:2) {#each range(3, 1) as i}
     function create_each_block$4(ctx) {
     	let div;
 
@@ -2651,7 +2678,7 @@ var app = (function () {
     			set_style(div, "--dotSize", +/*size*/ ctx[3] * 0.25 + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "animation-delay", /*i*/ ctx[6] * (+/*durationNum*/ ctx[5] / 10) + /*durationUnit*/ ctx[4]);
-    			add_location(div, file$d, 61, 4, 1491);
+    			add_location(div, file$d, 60, 4, 1498);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2674,7 +2701,7 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(61:2) {#each range(3, 1) as i}",
+    		source: "(60:2) {#each range(3, 1) as i}",
     		ctx
     	});
 
@@ -2702,7 +2729,7 @@ var app = (function () {
     			attr_dev(div, "class", "wrapper svelte-14w6xk7");
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$d, 59, 0, 1383);
+    			add_location(div, file$d, 58, 0, 1390);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2768,25 +2795,24 @@ var app = (function () {
 
     function instance$d($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("SyncLoader", slots, []);
-    	
+    	validate_slots('SyncLoader', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "0.6s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<SyncLoader> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<SyncLoader> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2801,12 +2827,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2862,9 +2888,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Rainbow.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Rainbow.svelte generated by Svelte v3.50.1 */
 
-    const file$c = "node_modules\\svelte-loading-spinners\\dist\\Rainbow.svelte";
+    const file$c = "..\\src\\Rainbow.svelte";
 
     function create_fragment$c(ctx) {
     	let div1;
@@ -2875,12 +2901,12 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			attr_dev(div0, "class", "rainbow svelte-1fuumrt");
-    			add_location(div0, file$c, 50, 2, 1072);
+    			add_location(div0, file$c, 49, 2, 1079);
     			attr_dev(div1, "class", "wrapper svelte-1fuumrt");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$c, 47, 0, 969);
+    			add_location(div1, file$c, 46, 0, 976);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2922,32 +2948,31 @@ var app = (function () {
 
     function instance$c($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Rainbow", slots, []);
-    	
+    	validate_slots('Rainbow', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "3s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Rainbow> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Rainbow> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3003,8 +3028,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Wave.svelte generated by Svelte v3.38.2 */
-    const file$b = "node_modules\\svelte-loading-spinners\\dist\\Wave.svelte";
+    /* ..\src\Wave.svelte generated by Svelte v3.50.1 */
+    const file$b = "..\\src\\Wave.svelte";
 
     function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3012,7 +3037,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (48:2) {#each range(10, 0) as version}
+    // (47:2) {#each range(10, 0) as version}
     function create_each_block$3(ctx) {
     	let div;
 
@@ -3022,7 +3047,7 @@ var app = (function () {
     			attr_dev(div, "class", "bar svelte-8cmcz4");
     			set_style(div, "left", /*version*/ ctx[6] * (+/*size*/ ctx[3] / 5 + (+/*size*/ ctx[3] / 15 - +/*size*/ ctx[3] / 100)) + /*unit*/ ctx[1]);
     			set_style(div, "animation-delay", /*version*/ ctx[6] * (+/*durationNum*/ ctx[5] / 8.3) + /*durationUnit*/ ctx[4]);
-    			add_location(div, file$b, 48, 4, 1193);
+    			add_location(div, file$b, 47, 4, 1200);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3041,7 +3066,7 @@ var app = (function () {
     		block,
     		id: create_each_block$3.name,
     		type: "each",
-    		source: "(48:2) {#each range(10, 0) as version}",
+    		source: "(47:2) {#each range(10, 0) as version}",
     		ctx
     	});
 
@@ -3070,7 +3095,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$b, 44, 0, 1053);
+    			add_location(div, file$b, 43, 0, 1060);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3140,25 +3165,24 @@ var app = (function () {
 
     function instance$b($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Wave", slots, []);
-    	
+    	validate_slots('Wave', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.25s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Wave> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Wave> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -3173,12 +3197,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3234,9 +3258,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Firework.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Firework.svelte generated by Svelte v3.50.1 */
 
-    const file$a = "node_modules\\svelte-loading-spinners\\dist\\Firework.svelte";
+    const file$a = "..\\src\\Firework.svelte";
 
     function create_fragment$a(ctx) {
     	let div1;
@@ -3247,12 +3271,12 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			attr_dev(div0, "class", "firework svelte-1x2s7pr");
-    			add_location(div0, file$a, 41, 2, 866);
+    			add_location(div0, file$a, 40, 2, 873);
     			attr_dev(div1, "class", "wrapper svelte-1x2s7pr");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$a, 38, 0, 763);
+    			add_location(div1, file$a, 37, 0, 770);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3294,32 +3318,31 @@ var app = (function () {
 
     function instance$a($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Firework", slots, []);
-    	
+    	validate_slots('Firework', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.25s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Firework> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Firework> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3375,8 +3398,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Pulse.svelte generated by Svelte v3.38.2 */
-    const file$9 = "node_modules\\svelte-loading-spinners\\dist\\Pulse.svelte";
+    /* ..\src\Pulse.svelte generated by Svelte v3.50.1 */
+    const file$9 = "..\\src\\Pulse.svelte";
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3384,7 +3407,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (45:2) {#each range(3, 0) as version}
+    // (44:2) {#each range(3, 0) as version}
     function create_each_block$2(ctx) {
     	let div;
 
@@ -3394,7 +3417,7 @@ var app = (function () {
     			attr_dev(div, "class", "cube svelte-446r86");
     			set_style(div, "animation-delay", /*version*/ ctx[6] * (+/*durationNum*/ ctx[5] / 10) + /*durationUnit*/ ctx[4]);
     			set_style(div, "left", /*version*/ ctx[6] * (+/*size*/ ctx[3] / 3 + +/*size*/ ctx[3] / 15) + /*unit*/ ctx[1]);
-    			add_location(div, file$9, 45, 4, 1049);
+    			add_location(div, file$9, 44, 4, 1056);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3413,7 +3436,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(45:2) {#each range(3, 0) as version}",
+    		source: "(44:2) {#each range(3, 0) as version}",
     		ctx
     	});
 
@@ -3442,7 +3465,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$9, 41, 0, 911);
+    			add_location(div, file$9, 40, 0, 918);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3512,25 +3535,24 @@ var app = (function () {
 
     function instance$9($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Pulse", slots, []);
-    	
+    	validate_slots('Pulse', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.5s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Pulse> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Pulse> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -3545,12 +3567,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3606,8 +3628,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Jellyfish.svelte generated by Svelte v3.38.2 */
-    const file$8 = "node_modules\\svelte-loading-spinners\\dist\\Jellyfish.svelte";
+    /* ..\src\Jellyfish.svelte generated by Svelte v3.50.1 */
+    const file$8 = "..\\src\\Jellyfish.svelte";
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3615,7 +3637,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (43:2) {#each range(6, 0) as version}
+    // (42:2) {#each range(6, 0) as version}
     function create_each_block$1(ctx) {
     	let div;
 
@@ -3626,7 +3648,7 @@ var app = (function () {
     			set_style(div, "animation-delay", /*version*/ ctx[6] * (/*durationNum*/ ctx[5] / 25) + /*durationUnit*/ ctx[4]);
     			set_style(div, "width", /*version*/ ctx[6] * (+/*size*/ ctx[3] / 6) + /*unit*/ ctx[1]);
     			set_style(div, "height", /*version*/ ctx[6] * (+/*size*/ ctx[3] / 6) / 2 + /*unit*/ ctx[1]);
-    			add_location(div, file$8, 43, 4, 1157);
+    			add_location(div, file$8, 42, 4, 1164);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3649,7 +3671,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(43:2) {#each range(6, 0) as version}",
+    		source: "(42:2) {#each range(6, 0) as version}",
     		ctx
     	});
 
@@ -3681,7 +3703,7 @@ var app = (function () {
     			set_style(div, "--motionTwo", +/*size*/ ctx[3] / 4 + /*unit*/ ctx[1]);
     			set_style(div, "--motionThree", -/*size*/ ctx[3] / 5 + /*unit*/ ctx[1]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$8, 39, 0, 920);
+    			add_location(div, file$8, 38, 0, 927);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3763,25 +3785,24 @@ var app = (function () {
 
     function instance$8($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Jellyfish", slots, []);
-    	
+    	validate_slots('Jellyfish', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "2.5s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Jellyfish> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Jellyfish> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -3796,12 +3817,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3857,8 +3878,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Chasing.svelte generated by Svelte v3.38.2 */
-    const file$7 = "node_modules\\svelte-loading-spinners\\dist\\Chasing.svelte";
+    /* ..\src\Chasing.svelte generated by Svelte v3.50.1 */
+    const file$7 = "..\\src\\Chasing.svelte";
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3866,7 +3887,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (55:4) {#each range(2, 0) as version}
+    // (54:4) {#each range(2, 0) as version}
     function create_each_block(ctx) {
     	let div;
 
@@ -3877,11 +3898,11 @@ var app = (function () {
 
     			set_style(div, "animation-delay", /*version*/ ctx[6] === 1
     			? `${/*durationNum*/ ctx[5] / 2}${/*durationUnit*/ ctx[4]}`
-    			: "0s");
+    			: '0s');
 
-    			set_style(div, "bottom", /*version*/ ctx[6] === 1 ? "0" : "");
-    			set_style(div, "top", /*version*/ ctx[6] === 1 ? "auto" : "");
-    			add_location(div, file$7, 55, 6, 1219);
+    			set_style(div, "bottom", /*version*/ ctx[6] === 1 ? '0' : '');
+    			set_style(div, "top", /*version*/ ctx[6] === 1 ? 'auto' : '');
+    			add_location(div, file$7, 54, 6, 1226);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3896,7 +3917,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(55:4) {#each range(2, 0) as version}",
+    		source: "(54:4) {#each range(2, 0) as version}",
     		ctx
     	});
 
@@ -3924,12 +3945,12 @@ var app = (function () {
     			}
 
     			attr_dev(div0, "class", "spinner svelte-1unnvn6");
-    			add_location(div0, file$7, 53, 2, 1154);
+    			add_location(div0, file$7, 52, 2, 1161);
     			attr_dev(div1, "class", "wrapper svelte-1unnvn6");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$7, 50, 0, 1051);
+    			add_location(div1, file$7, 49, 0, 1058);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4000,25 +4021,24 @@ var app = (function () {
 
     function instance$7($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Chasing", slots, []);
-    	
+    	validate_slots('Chasing', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "2s" } = $$props;
     	let { size = "60" } = $$props;
     	let durationUnit = duration.match(durationUnitRegex)[0];
     	let durationNum = duration.replace(durationUnitRegex, "");
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Chasing> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Chasing> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -4033,12 +4053,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("durationUnit" in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
-    		if ("durationNum" in $$props) $$invalidate(5, durationNum = $$props.durationNum);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('durationUnit' in $$props) $$invalidate(4, durationUnit = $$props.durationUnit);
+    		if ('durationNum' in $$props) $$invalidate(5, durationNum = $$props.durationNum);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4094,9 +4114,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Shadow.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Shadow.svelte generated by Svelte v3.50.1 */
 
-    const file$6 = "node_modules\\svelte-loading-spinners\\dist\\Shadow.svelte";
+    const file$6 = "..\\src\\Shadow.svelte";
 
     function create_fragment$6(ctx) {
     	let div1;
@@ -4107,12 +4127,12 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			attr_dev(div0, "class", "shadow svelte-tycttu");
-    			add_location(div0, file$6, 73, 2, 1978);
+    			add_location(div0, file$6, 72, 2, 1985);
     			attr_dev(div1, "class", "wrapper svelte-tycttu");
     			set_style(div1, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div1, "--color", /*color*/ ctx[0]);
     			set_style(div1, "--duration", /*duration*/ ctx[2]);
-    			add_location(div1, file$6, 70, 0, 1875);
+    			add_location(div1, file$6, 69, 0, 1882);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4154,32 +4174,31 @@ var app = (function () {
 
     function instance$6($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Shadow", slots, []);
-    	
+    	validate_slots('Shadow', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.7s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Shadow> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Shadow> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4235,9 +4254,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Square.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Square.svelte generated by Svelte v3.50.1 */
 
-    const file$5 = "node_modules\\svelte-loading-spinners\\dist\\Square.svelte";
+    const file$5 = "..\\src\\Square.svelte";
 
     function create_fragment$5(ctx) {
     	let div;
@@ -4249,7 +4268,7 @@ var app = (function () {
     			set_style(div, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
-    			add_location(div, file$5, 38, 0, 952);
+    			add_location(div, file$5, 37, 0, 959);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4290,32 +4309,31 @@ var app = (function () {
 
     function instance$5($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Square", slots, []);
-    	
+    	validate_slots('Square', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "3s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Square> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Square> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4371,9 +4389,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Moon.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Moon.svelte generated by Svelte v3.50.1 */
 
-    const file$4 = "node_modules\\svelte-loading-spinners\\dist\\Moon.svelte";
+    const file$4 = "..\\src\\Moon.svelte";
 
     function create_fragment$4(ctx) {
     	let div2;
@@ -4388,15 +4406,15 @@ var app = (function () {
     			t = space();
     			div1 = element("div");
     			attr_dev(div0, "class", "circle-one svelte-nlgli4");
-    			add_location(div0, file$4, 47, 2, 1200);
+    			add_location(div0, file$4, 46, 2, 1207);
     			attr_dev(div1, "class", "circle-two svelte-nlgli4");
-    			add_location(div1, file$4, 48, 2, 1230);
+    			add_location(div1, file$4, 47, 2, 1237);
     			attr_dev(div2, "class", "wrapper svelte-nlgli4");
     			set_style(div2, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div2, "--color", /*color*/ ctx[0]);
     			set_style(div2, "--moonSize", /*top*/ ctx[4] + /*unit*/ ctx[1]);
     			set_style(div2, "--duration", /*duration*/ ctx[2]);
-    			add_location(div2, file$4, 44, 0, 1072);
+    			add_location(div2, file$4, 43, 0, 1079);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4444,25 +4462,24 @@ var app = (function () {
 
     function instance$4($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Moon", slots, []);
-    	
+    	validate_slots('Moon', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "0.6s" } = $$props;
     	let { size = "60" } = $$props;
     	let moonSize = +size / 7;
     	let top = +size / 2 - moonSize / 2;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Moon> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Moon> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -4475,12 +4492,12 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("moonSize" in $$props) moonSize = $$props.moonSize;
-    		if ("top" in $$props) $$invalidate(4, top = $$props.top);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('moonSize' in $$props) moonSize = $$props.moonSize;
+    		if ('top' in $$props) $$invalidate(4, top = $$props.top);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4536,8 +4553,8 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Plane.svelte generated by Svelte v3.38.2 */
-    const file$3 = "node_modules\\svelte-loading-spinners\\dist\\Plane.svelte";
+    /* ..\src\Plane.svelte generated by Svelte v3.50.1 */
+    const file$3 = "..\\src\\Plane.svelte";
 
     function create_fragment$3(ctx) {
     	let div7;
@@ -4564,28 +4581,28 @@ var app = (function () {
     			div5 = element("div");
     			div4 = element("div");
     			attr_dev(div0, "class", "plane svelte-1sqavxm");
-    			add_location(div0, file$3, 115, 6, 2415);
+    			add_location(div0, file$3, 114, 6, 2422);
     			attr_dev(div1, "id", "top");
     			attr_dev(div1, "class", "mask svelte-1sqavxm");
-    			add_location(div1, file$3, 114, 4, 2380);
+    			add_location(div1, file$3, 113, 4, 2387);
     			attr_dev(div2, "class", "plane svelte-1sqavxm");
-    			add_location(div2, file$3, 118, 6, 2492);
+    			add_location(div2, file$3, 117, 6, 2499);
     			attr_dev(div3, "id", "middle");
     			attr_dev(div3, "class", "mask svelte-1sqavxm");
-    			add_location(div3, file$3, 117, 4, 2454);
+    			add_location(div3, file$3, 116, 4, 2461);
     			attr_dev(div4, "class", "plane svelte-1sqavxm");
-    			add_location(div4, file$3, 121, 6, 2569);
+    			add_location(div4, file$3, 120, 6, 2576);
     			attr_dev(div5, "id", "bottom");
     			attr_dev(div5, "class", "mask svelte-1sqavxm");
-    			add_location(div5, file$3, 120, 4, 2531);
+    			add_location(div5, file$3, 119, 4, 2538);
     			attr_dev(div6, "class", "spinner-inner svelte-1sqavxm");
-    			add_location(div6, file$3, 113, 2, 2347);
+    			add_location(div6, file$3, 112, 2, 2354);
     			attr_dev(div7, "class", "wrapper svelte-1sqavxm");
     			set_style(div7, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(div7, "--color", /*color*/ ctx[0]);
     			set_style(div7, "--rgba", /*rgba*/ ctx[4]);
     			set_style(div7, "--duration", /*duration*/ ctx[2]);
-    			add_location(div7, file$3, 110, 0, 2228);
+    			add_location(div7, file$3, 109, 0, 2235);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4639,24 +4656,23 @@ var app = (function () {
 
     function instance$3($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Plane", slots, []);
-    	
+    	validate_slots('Plane', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.3s" } = $$props;
     	let { size = "60" } = $$props;
     	let rgba;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Plane> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Plane> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({
@@ -4669,11 +4685,11 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("rgba" in $$props) $$invalidate(4, rgba = $$props.rgba);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('rgba' in $$props) $$invalidate(4, rgba = $$props.rgba);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4735,9 +4751,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Diamonds.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Diamonds.svelte generated by Svelte v3.50.1 */
 
-    const file$2 = "node_modules\\svelte-loading-spinners\\dist\\Diamonds.svelte";
+    const file$2 = "..\\src\\Diamonds.svelte";
 
     function create_fragment$2(ctx) {
     	let span;
@@ -4755,17 +4771,17 @@ var app = (function () {
     			div1 = element("div");
     			t1 = space();
     			div2 = element("div");
-    			attr_dev(div0, "class", "svelte-evhfle");
-    			add_location(div0, file$2, 48, 2, 1147);
-    			attr_dev(div1, "class", "svelte-evhfle");
-    			add_location(div1, file$2, 49, 2, 1158);
-    			attr_dev(div2, "class", "svelte-evhfle");
-    			add_location(div2, file$2, 50, 2, 1169);
+    			attr_dev(div0, "class", "svelte-1ulzg5f");
+    			add_location(div0, file$2, 47, 2, 1155);
+    			attr_dev(div1, "class", "svelte-1ulzg5f");
+    			add_location(div1, file$2, 48, 2, 1166);
+    			attr_dev(div2, "class", "svelte-1ulzg5f");
+    			add_location(div2, file$2, 49, 2, 1177);
     			set_style(span, "--size", /*size*/ ctx[3] + /*unit*/ ctx[1]);
     			set_style(span, "--color", /*color*/ ctx[0]);
     			set_style(span, "--duration", /*duration*/ ctx[2]);
-    			attr_dev(span, "class", "svelte-evhfle");
-    			add_location(span, file$2, 47, 0, 1066);
+    			attr_dev(span, "class", "svelte-1ulzg5f");
+    			add_location(span, file$2, 46, 0, 1074);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4811,32 +4827,31 @@ var app = (function () {
 
     function instance$2($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Diamonds", slots, []);
-    	
+    	validate_slots('Diamonds', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "1.5s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Diamonds> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Diamonds> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4892,9 +4907,9 @@ var app = (function () {
     	}
     }
 
-    /* node_modules\svelte-loading-spinners\dist\Clock.svelte generated by Svelte v3.38.2 */
+    /* ..\src\Clock.svelte generated by Svelte v3.50.1 */
 
-    const file$1 = "node_modules\\svelte-loading-spinners\\dist\\Clock.svelte";
+    const file$1 = "..\\src\\Clock.svelte";
 
     function create_fragment$1(ctx) {
     	let div;
@@ -4906,7 +4921,7 @@ var app = (function () {
     			set_style(div, "--color", /*color*/ ctx[0]);
     			set_style(div, "--duration", /*duration*/ ctx[2]);
     			attr_dev(div, "class", "svelte-1cgj772");
-    			add_location(div, file$1, 45, 0, 1149);
+    			add_location(div, file$1, 44, 0, 1156);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4947,32 +4962,31 @@ var app = (function () {
 
     function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Clock", slots, []);
-    	
+    	validate_slots('Clock', slots, []);
     	let { color = "#FF3E00" } = $$props;
     	let { unit = "px" } = $$props;
     	let { duration = "8s" } = $$props;
     	let { size = "60" } = $$props;
-    	const writable_props = ["color", "unit", "duration", "size"];
+    	const writable_props = ['color', 'unit', 'duration', 'size'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Clock> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Clock> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	$$self.$capture_state = () => ({ color, unit, duration, size });
 
     	$$self.$inject_state = $$props => {
-    		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-    		if ("unit" in $$props) $$invalidate(1, unit = $$props.unit);
-    		if ("duration" in $$props) $$invalidate(2, duration = $$props.duration);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('unit' in $$props) $$invalidate(1, unit = $$props.unit);
+    		if ('duration' in $$props) $$invalidate(2, duration = $$props.duration);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -5028,7 +5042,7 @@ var app = (function () {
     	}
     }
 
-    /* src\App.svelte generated by Svelte v3.38.2 */
+    /* src\App.svelte generated by Svelte v3.50.1 */
 
     const file = "src\\App.svelte";
 
@@ -5514,142 +5528,142 @@ var app = (function () {
     			div48 = element("div");
     			div48.textContent = "Clock";
     			attr_dev(h1, "class", "svelte-1bp00zc");
-    			add_location(h1, file, 79, 2, 1898);
+    			add_location(h1, file, 79, 2, 1891);
     			attr_dev(a, "href", "https://github.com/Schum123/svelte-loading-spinners");
     			attr_dev(a, "class", "btn svelte-1bp00zc");
-    			add_location(a, file, 80, 2, 1925);
+    			add_location(a, file, 80, 2, 1918);
     			attr_dev(div0, "class", "header svelte-1bp00zc");
-    			add_location(div0, file, 78, 0, 1874);
+    			add_location(div0, file, 78, 0, 1867);
     			attr_dev(span, "class", "color-value svelte-1bp00zc");
-    			add_location(span, file, 85, 2, 2059);
-    			add_location(button, file, 86, 2, 2110);
+    			add_location(span, file, 85, 2, 2052);
+    			add_location(button, file, 86, 2, 2103);
     			attr_dev(input, "type", "color");
     			attr_dev(input, "class", "svelte-1bp00zc");
-    			add_location(input, file, 87, 2, 2173);
+    			add_location(input, file, 87, 2, 2166);
     			attr_dev(div1, "class", "color-picker svelte-1bp00zc");
-    			add_location(div1, file, 84, 0, 2029);
+    			add_location(div1, file, 84, 0, 2022);
     			attr_dev(div2, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div2, file, 93, 4, 2345);
+    			add_location(div2, file, 93, 4, 2338);
     			attr_dev(div3, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div3, "title", "SpinLine");
-    			add_location(div3, file, 91, 2, 2263);
+    			add_location(div3, file, 91, 2, 2256);
     			attr_dev(div4, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div4, file, 103, 4, 2580);
+    			add_location(div4, file, 103, 4, 2573);
     			attr_dev(div5, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div5, "title", "Circle2");
-    			add_location(div5, file, 96, 2, 2402);
+    			add_location(div5, file, 96, 2, 2395);
     			attr_dev(div6, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div6, file, 107, 4, 2724);
+    			add_location(div6, file, 107, 4, 2717);
     			attr_dev(div7, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div7, "title", "DoubleBounce");
-    			add_location(div7, file, 105, 2, 2634);
+    			add_location(div7, file, 105, 2, 2627);
     			attr_dev(div8, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div8, file, 111, 4, 2846);
+    			add_location(div8, file, 111, 4, 2839);
     			attr_dev(div9, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div9, "title", "Circle");
-    			add_location(div9, file, 109, 2, 2783);
+    			add_location(div9, file, 109, 2, 2776);
     			attr_dev(div10, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div10, file, 115, 4, 2986);
+    			add_location(div10, file, 115, 4, 2979);
     			attr_dev(div11, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div11, "title", "Stretch");
-    			add_location(div11, file, 113, 2, 2899);
+    			add_location(div11, file, 113, 2, 2892);
     			attr_dev(div12, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div12, file, 125, 4, 3257);
+    			add_location(div12, file, 125, 4, 3250);
     			attr_dev(div13, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div13, "title", "Circle3");
-    			add_location(div13, file, 117, 2, 3040);
+    			add_location(div13, file, 117, 2, 3033);
     			attr_dev(div14, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div14, file, 129, 4, 3402);
+    			add_location(div14, file, 129, 4, 3395);
     			attr_dev(div15, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div15, "title", "BarLoader");
-    			add_location(div15, file, 127, 2, 3311);
+    			add_location(div15, file, 127, 2, 3304);
     			attr_dev(div16, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div16, file, 133, 4, 3544);
+    			add_location(div16, file, 133, 4, 3537);
     			attr_dev(div17, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div17, "title", "SyncLoader");
-    			add_location(div17, file, 131, 2, 3458);
+    			add_location(div17, file, 131, 2, 3451);
     			attr_dev(div18, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div18, file, 137, 4, 3679);
+    			add_location(div18, file, 137, 4, 3672);
     			attr_dev(div19, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div19, "title", "Jumper");
-    			add_location(div19, file, 135, 2, 3601);
+    			add_location(div19, file, 135, 2, 3594);
     			attr_dev(div20, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div20, file, 141, 4, 3815);
+    			add_location(div20, file, 141, 4, 3808);
     			attr_dev(div21, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div21, "title", "GoogleSpin");
-    			add_location(div21, file, 139, 2, 3732);
+    			add_location(div21, file, 139, 2, 3725);
     			attr_dev(div22, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div22, file, 145, 4, 3954);
+    			add_location(div22, file, 145, 4, 3947);
     			attr_dev(div23, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div23, "title", "ScaleOut");
-    			add_location(div23, file, 143, 2, 3872);
+    			add_location(div23, file, 143, 2, 3865);
     			attr_dev(div24, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div24, file, 149, 4, 4095);
+    			add_location(div24, file, 149, 4, 4088);
     			attr_dev(div25, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div25, "title", "RingLoader");
-    			add_location(div25, file, 147, 2, 4009);
+    			add_location(div25, file, 147, 2, 4002);
     			attr_dev(div26, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div26, file, 153, 4, 4232);
+    			add_location(div26, file, 153, 4, 4225);
     			attr_dev(div27, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div27, "title", "Rainbow");
-    			add_location(div27, file, 151, 2, 4152);
+    			add_location(div27, file, 151, 2, 4145);
     			attr_dev(div28, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div28, file, 157, 4, 4360);
+    			add_location(div28, file, 157, 4, 4353);
     			attr_dev(div29, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div29, "title", "Wave");
-    			add_location(div29, file, 155, 2, 4286);
+    			add_location(div29, file, 155, 2, 4279);
     			attr_dev(div30, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div30, file, 161, 4, 4493);
+    			add_location(div30, file, 161, 4, 4486);
     			attr_dev(div31, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div31, "title", "Firework");
-    			add_location(div31, file, 159, 2, 4411);
+    			add_location(div31, file, 159, 2, 4404);
     			attr_dev(div32, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div32, file, 165, 4, 4624);
+    			add_location(div32, file, 165, 4, 4617);
     			attr_dev(div33, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div33, "title", "Pulse");
-    			add_location(div33, file, 163, 2, 4548);
+    			add_location(div33, file, 163, 2, 4541);
     			attr_dev(div34, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div34, file, 169, 4, 4760);
+    			add_location(div34, file, 169, 4, 4753);
     			attr_dev(div35, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div35, "title", "Jellyfish");
-    			add_location(div35, file, 167, 2, 4676);
+    			add_location(div35, file, 167, 2, 4669);
     			attr_dev(div36, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div36, file, 173, 4, 4903);
+    			add_location(div36, file, 173, 4, 4896);
     			attr_dev(div37, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div37, "title", "Chasing");
-    			add_location(div37, file, 171, 2, 4816);
+    			add_location(div37, file, 171, 2, 4809);
     			attr_dev(div38, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div38, file, 177, 4, 5035);
+    			add_location(div38, file, 177, 4, 5028);
     			attr_dev(div39, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div39, "title", "Shadow");
-    			add_location(div39, file, 175, 2, 4957);
+    			add_location(div39, file, 175, 2, 4950);
     			attr_dev(div40, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div40, file, 181, 4, 5166);
+    			add_location(div40, file, 181, 4, 5159);
     			attr_dev(div41, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div41, "title", "Square");
-    			add_location(div41, file, 179, 2, 5088);
+    			add_location(div41, file, 179, 2, 5081);
     			attr_dev(div42, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div42, file, 185, 4, 5293);
+    			add_location(div42, file, 185, 4, 5286);
     			attr_dev(div43, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div43, "title", "Moon");
-    			add_location(div43, file, 183, 2, 5219);
+    			add_location(div43, file, 183, 2, 5212);
     			attr_dev(div44, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div44, file, 189, 4, 5420);
+    			add_location(div44, file, 189, 4, 5413);
     			attr_dev(div45, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div45, "title", "Plane");
-    			add_location(div45, file, 187, 2, 5344);
+    			add_location(div45, file, 187, 2, 5337);
     			attr_dev(div46, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div46, file, 193, 4, 5539);
+    			add_location(div46, file, 193, 4, 5532);
     			attr_dev(div47, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div47, "title", "Diamonds");
-    			add_location(div47, file, 191, 2, 5472);
+    			add_location(div47, file, 191, 2, 5465);
     			attr_dev(div48, "class", "spinner-title svelte-1bp00zc");
-    			add_location(div48, file, 197, 4, 5655);
+    			add_location(div48, file, 197, 4, 5648);
     			attr_dev(div49, "class", "spinner-item svelte-1bp00zc");
     			attr_dev(div49, "title", "Clock");
-    			add_location(div49, file, 195, 2, 5594);
+    			add_location(div49, file, 195, 2, 5587);
     			attr_dev(section, "class", "svelte-1bp00zc");
-    			add_location(section, file, 90, 0, 2250);
+    			add_location(section, file, 90, 0, 2243);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5970,7 +5984,7 @@ var app = (function () {
 
     function instance($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("App", slots, []);
+    	validate_slots('App', slots, []);
     	let { name } = $$props;
     	let color = "#FF3E00";
     	let size = "60";
@@ -5981,10 +5995,10 @@ var app = (function () {
     		colorPicker.click();
     	}
 
-    	const writable_props = ["name"];
+    	const writable_props = ['name'];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
     	function input_input_handler() {
@@ -5993,14 +6007,14 @@ var app = (function () {
     	}
 
     	function input_binding($$value) {
-    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			colorPicker = $$value;
     			$$invalidate(2, colorPicker);
     		});
     	}
 
     	$$self.$$set = $$props => {
-    		if ("name" in $$props) $$invalidate(0, name = $$props.name);
+    		if ('name' in $$props) $$invalidate(0, name = $$props.name);
     	};
 
     	$$self.$capture_state = () => ({
@@ -6037,11 +6051,11 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("name" in $$props) $$invalidate(0, name = $$props.name);
-    		if ("color" in $$props) $$invalidate(1, color = $$props.color);
-    		if ("size" in $$props) $$invalidate(3, size = $$props.size);
-    		if ("unit" in $$props) $$invalidate(4, unit = $$props.unit);
-    		if ("colorPicker" in $$props) $$invalidate(2, colorPicker = $$props.colorPicker);
+    		if ('name' in $$props) $$invalidate(0, name = $$props.name);
+    		if ('color' in $$props) $$invalidate(1, color = $$props.color);
+    		if ('size' in $$props) $$invalidate(3, size = $$props.size);
+    		if ('unit' in $$props) $$invalidate(4, unit = $$props.unit);
+    		if ('colorPicker' in $$props) $$invalidate(2, colorPicker = $$props.colorPicker);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -6075,7 +6089,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*name*/ ctx[0] === undefined && !("name" in props)) {
+    		if (/*name*/ ctx[0] === undefined && !('name' in props)) {
     			console.warn("<App> was created without expected prop 'name'");
     		}
     	}
@@ -6090,14 +6104,14 @@ var app = (function () {
     }
 
     const app = new App({
-        target: document.body,
-        props: {
-            name: {
-                default: "svelte-loading-spinners"
-            }
+      target: document.body,
+      props: {
+        name: {
+          default: "svelte-loading-spinners"
         }
+      }
     });
 
     return app;
 
-}());
+})();
