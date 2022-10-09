@@ -8,7 +8,7 @@
   export let durationOuter: string = `${durationMultiplier * 2}s`;
   export let durationInner: string = `${durationMultiplier * 1.5}s`;
   export let durationCenter: string = `${durationMultiplier * 3}s`;
-  export let pause = false;
+  export let pause: boolean = false;
 </script>
 
 <style>

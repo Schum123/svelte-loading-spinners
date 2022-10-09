@@ -31,8 +31,7 @@
   let size: string = "60";
   let unit: string = "px";
   let colorPicker: any;
-
-  let pause = false;
+  //let pause: boolean = false;
 
   function triggerColorPicker() {
     colorPicker.click();
@@ -117,11 +116,10 @@
   <button on:click={triggerColorPicker}>Change color</button>
   <input type="color" bind:value={color} bind:this={colorPicker} />
 </div>
-
 <section>
   <div class="spinner-item" title="SpinLine">
     <SpinLine {size} {color} />
-    <div class="spinner-title">SpinLine</div>
+    <div class="spinner-title" />
   </div>
 
   <div class="spinner-item" title="Circle2">

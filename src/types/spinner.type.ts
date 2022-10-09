@@ -3,4 +3,5 @@ export type SpinnerTypes = {
   color: string
   unit: string
   duration: string
+  pause: boolean
 }

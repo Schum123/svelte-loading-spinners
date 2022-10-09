@@ -5,7 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "2s";
   export let size: SpinnerTypes["size"] = "60";
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
 </script>
 
 <style>

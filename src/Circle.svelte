@@ -4,7 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.75s";
   export let size: SpinnerTypes["size"] = "60";
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
 </script>
 
 <style>
@@ -32,5 +32,6 @@
 </style>
 
 <div
-  class="circle" class:pause-animation={pause}
+  class="circle"
+  class:pause-animation={pause}
   style="--size: {size}{unit}; --color: {color}; --duration: {duration}" />

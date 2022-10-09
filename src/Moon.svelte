@@ -4,7 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.6s";
   export let size: SpinnerTypes["size"] = "60";
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
   let moonSize: number = +size / 7;
   let top: number = +size / 2 - moonSize / 2;
 </script>

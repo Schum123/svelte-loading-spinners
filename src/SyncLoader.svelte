@@ -5,7 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.6s";
   export let size: SpinnerTypes["size"] = "60";
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");

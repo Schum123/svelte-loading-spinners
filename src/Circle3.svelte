@@ -6,7 +6,7 @@
   export let ballBottomLeft: string = "#40B3FF";
   export let ballBottomRight: string = "#676778";
   export let duration = "1.5s";
-  export let pause = false;
+  export let pause: boolean = false;
 </script>
 
 <style>

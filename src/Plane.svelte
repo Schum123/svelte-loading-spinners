@@ -5,7 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1.3s";
   export let size: SpinnerTypes["size"] = "60";
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
   let rgba: string;
   $: rgba = calculateRgba(color, 0.6);
 </script>

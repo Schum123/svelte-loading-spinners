@@ -5,7 +5,7 @@
   export let duration: SpinnerTypes["duration"] = "4s";
   export let size: SpinnerTypes["size"] = "60";
   export let stroke = +size / 12 + unit;
-  export let pause = false;
+  export let pause: SpinnerTypes["pause"] = false;
 </script>
 
 <style>
