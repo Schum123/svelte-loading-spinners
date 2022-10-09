@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "2s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -33,6 +34,9 @@
   .border.\32 {
     animation: var(--duration) linear 0s infinite normal none running ringTwo;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
 
   @keyframes ringOne {
     0% {
@@ -56,6 +60,6 @@
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
   {#each range(2, 1) as version}
-    <div class="border {version}" />
+    <div class="border {version}" class:pause-animation={pause} />
   {/each}
 </div>

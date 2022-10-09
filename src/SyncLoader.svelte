@@ -5,6 +5,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "0.6s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 
   let durationUnit = duration.match(durationUnitRegex)[0];
   let durationNum = duration.replace(durationUnitRegex, "");
@@ -27,6 +28,9 @@
     display: inline-block;
     border-radius: 100%;
     animation: sync var(--duration) ease-in-out infinite alternate both running;
+  }
+  .pause-animation {
+    animation-play-state: paused;
   }
 
   @-webkit-keyframes sync {
@@ -62,7 +66,7 @@
 <div class="wrapper" style="--size:{size}{unit}; --duration: {duration};">
   {#each range(3, 1) as i}
     <div
-      class="dot"
+      class="dot" class:pause-animation={pause}
       style="--dotSize:{+size * 0.25}{unit}; --color:{color}; animation-delay:  {i * (+durationNum / 10)}{durationUnit};" />
   {/each}
 </div>

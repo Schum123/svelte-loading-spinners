@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1.5s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -33,6 +34,9 @@
   div:nth-child(3) {
     animation-delay: calc(var(--duration) * 2 / 3 * -3);
   }
+  .pause-animation div {
+    animation-play-state: paused;
+  }
 
   @keyframes diamonds {
     50% {
@@ -46,7 +50,7 @@
   }
 </style>
 
-<span style="--size: {size}{unit}; --color:{color}; --duration: {duration};">
+<span style="--size: {size}{unit}; --color:{color}; --duration: {duration};" class:pause-animation={pause}>
   <div />
   <div />
   <div />

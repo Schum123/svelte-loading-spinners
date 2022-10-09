@@ -4,6 +4,7 @@
   export let unit: SpinnerTypes["unit"] = "px";
   export let duration: SpinnerTypes["duration"] = "1s";
   export let size: SpinnerTypes["size"] = "60";
+  export let pause = false;
 </script>
 
 <style>
@@ -20,6 +21,9 @@
     display: inline-block;
     animation: scaleOut var(--duration) ease-in-out infinite;
   }
+  .pause-animation {
+    animation-play-state: paused;
+  }
   @keyframes scaleOut {
     0% {
       transform: scale(0);
@@ -34,5 +38,5 @@
 <div
   class="wrapper"
   style="--size: {size}{unit}; --color: {color}; --duration: {duration}; --duration: {duration};">
-  <div class="circle" />
+  <div class="circle" class:pause-animation={pause} />
 </div>
