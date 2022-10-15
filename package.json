@@ -1,53 +1,45 @@
 {
-  "name": "svelte-loading-spinners",
-  "version": "0.2.0",
-  "svelte": "dist/index.js",
-  "module": "dist/index.mjs",
-  "main": "dist/index.umd.js",
-  "types": "dist/ts/index.d.ts",
-  "scripts": {
-    "prebuild": "rm -rf ./dist",
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "prepublishOnly": "npm run build",
-    "svelte-check": "svelte-check"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/schum123/svelte-loading-spinners.git"
-  },
-  "bugs": {
-    "url": "https://github.com/schum123/svelte-loading-spinners/issues"
-  },
-  "homepage": "https://github.com/schum123/svelte-loading-spinners#readme",
-  "description": "Loading spinners using the svelte framework.",
-  "devDependencies": {
-    "@rollup/plugin-node-resolve": "^14.1.0",
-    "@tsconfig/svelte": "^3.0.0",
-    "fs-extra": "^10.1.0",
-    "glob": "^8.0.3",
-    "rollup": "^2.79.1",
-    "rollup-plugin-execute": "^1.1.1",
-    "rollup-plugin-filesize": "^9.1.2",
-    "rollup-plugin-svelte": "^7.1.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.34.1",
-    "svelte": "^3.50.1",
-    "svelte-check": "^2.9.1",
-    "svelte-preprocess": "^4.10.7",
-    "tslib": "^2.4.0",
-    "typescript": "^4.8.4"
-  },
-  "license": "MIT",
-  "author": "Eric Schumertl",
-  "keywords": [
-    "svelte"
-  ],
-  "files": [
-    "src",
-    "dist"
-  ],
-  "dependencies": {
-    "rollup-plugin-import-css": "^3.0.3"
-  }
+	"name": "svelte-loading-spinners",
+	"version": "0.3.2",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/schum123/svelte-loading-spinners.git"
+	},
+	"bugs": {
+		"url": "https://github.com/schum123/svelte-loading-spinners/issues"
+	},
+	"homepage": "https://github.com/schum123/svelte-loading-spinners#readme",
+	"description": "Loading spinners using the svelte framework.",
+	"license": "MIT",
+	"author": "Eric Schumertl",
+	"keywords": [
+		"svelte"
+	],
+	"scripts": {
+		"dev": "vite dev",
+		"build": "svelte-kit sync && svelte-package",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/kit": "next",
+		"@sveltejs/package": "next",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.16.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"prettier": "^2.6.2",
+		"prettier-plugin-svelte": "^2.7.0",
+		"svelte": "^3.44.0",
+		"svelte-check": "^2.7.1",
+		"svelte-preprocess": "^4.10.6",
+		"tslib": "^2.3.1",
+		"typescript": "^4.7.4",
+		"vite": "^3.1.0"
+	},
+	"type": "module"
 }
