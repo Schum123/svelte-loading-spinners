@@ -33,6 +33,7 @@
 		width: 10%;
 		display: inline-block;
 		margin-right: 4px;
+		transform: scaleY(0.4);
 		background-color: var(--color);
 		animation: stretch var(--duration) ease-in-out infinite;
 	}
