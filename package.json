@@ -1,6 +1,20 @@
 {
 	"name": "svelte-loading-spinners",
-	"version": "0.3.0",
+	"version": "0.3.2",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/schum123/svelte-loading-spinners.git"
+	},
+	"bugs": {
+		"url": "https://github.com/schum123/svelte-loading-spinners/issues"
+	},
+	"homepage": "https://github.com/schum123/svelte-loading-spinners#readme",
+	"description": "Loading spinners using the svelte framework.",
+	"license": "MIT",
+	"author": "Eric Schumertl",
+	"keywords": [
+		"svelte"
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "svelte-kit sync && svelte-package",
