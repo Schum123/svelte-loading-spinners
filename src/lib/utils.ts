@@ -2,7 +2,7 @@ type HEX = string;
 
 export const durationUnitRegex = /[a-zA-Z]/;
 
-export const calculateRgba = (color: HEX, opacity: number) => {
+export const calculateRgba = (color: HEX, opacity: number): string => {
 	if (color[0] === '#') {
 		color = color.slice(1);
 	}

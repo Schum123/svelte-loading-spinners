@@ -6,9 +6,8 @@
 	export let duration: SpinnerTypes['duration'] = '1.25s';
 	export let size: SpinnerTypes['size'] = '60';
 	export let pause: SpinnerTypes['pause'] = false;
-
-	let durationUnit = duration.match(durationUnitRegex)![0];
-	let durationNum = duration.replace(durationUnitRegex, '');
+	let durationUnit: string = duration.match(durationUnitRegex)?.[0] ?? 's';
+	let durationNum: string = duration.replace(durationUnitRegex, '');
 </script>
 
 <div class="wrapper" style="--size: {size}{unit}; --color: {color}; --duration: {duration};">
