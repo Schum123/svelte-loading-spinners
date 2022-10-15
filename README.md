@@ -1,38 +1,65 @@
-# create-svelte
+# svelte-loading-spinners
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+> collection of loading spinners with Svelte.js
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Installation
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm i --save-dev svelte-loading-spinners
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+or
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+yarn add -D svelte-loading-spinners
 ```
 
-## Building
+## Usage
 
-To create a production version of your app:
+```svelte
+<Jumper size="60" color="#FF3E00" unit="px" duration="1s"></Jumper>
 
-```bash
-npm run build
+<script>
+  import { Jumper } from 'svelte-loading-spinners'
+</script>
 ```
 
-You can preview the production build with `npm run preview`.
+## List of available spinners
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Props: `size`, `color`, `unit`, `duration` and `pause`.
+The default props; `unit` is `px`, `color` is `#FF3E00` and `size` `60px`.
+
+Notes:
+
+`Circle2` instead of the `color` and `duration` props has `colorOuter`, `colorCenter`, `colorInner`, `durationOuter`, `durationCenter`, `durationInner` props.
+
+`Circle3` has `ballTopLeft`, `ballTopRight`, `ballBottomLeft` and `ballBottomRight` as props aswell.
+
+|      Loaders |
+| -----------: |
+|    BarLoader |
+|      Chasing |
+|       Circle |
+|      Circle2 |
+|      Circle3 |
+| DoubleBounce |
+|     Firework |
+|    Jellyfish |
+|       Jumper |
+|        Pulse |
+|      Rainbow |
+|   RingLoader |
+|     ScaleOut |
+|       Shadow |
+|     SpinLine |
+|      Stretch |
+|   SyncLoader |
+|         Wave |
+|       Square |
+|         Moon |
+
+## Demo
+
+List of all spinner: [Demo](https://schum123.github.io/svelte-loading-spinners/)
+
+## Development Setup
