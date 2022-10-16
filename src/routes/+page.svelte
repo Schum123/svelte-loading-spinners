@@ -23,7 +23,10 @@
 		Plane,
 		Diamonds,
 		Clock,
-		Wave
+		Wave,
+		Puff,
+		ArrowDown,
+		ArrowUp
 	} from '../lib';
 	let color = '#FF3E00';
 	let size = '60';
@@ -149,6 +152,18 @@
 	<div class="spinner-item" title="Clock">
 		<Clock {size} {color} />
 		<div class="spinner-title">Clock</div>
+	</div>
+	<div class="spinner-item" title="Puff">
+		<Puff {size} {color} />
+		<div class="spinner-title">Puff</div>
+	</div>
+	<div class="spinner-item" title="ArrowDown">
+		<ArrowDown {color} />
+		<div class="spinner-title">ArrowDown</div>
+	</div>
+	<div class="spinner-item" title="ArrowUp">
+		<ArrowUp {color} />
+		<div class="spinner-title">ArrowUp</div>
 	</div>
 </section>
 

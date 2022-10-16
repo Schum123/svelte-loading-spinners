@@ -22,3 +22,6 @@ export { default as Plane } from './Plane.svelte';
 export { default as Diamonds } from './Diamonds.svelte';
 export { default as Clock } from './Clock.svelte';
 export { default as Wave } from './Wave.svelte';
+export { default as Puff } from './Puff.svelte';
+export { default as ArrowDown } from './ArrowDown.svelte';
+export { default as ArrowUp } from './ArrowUp.svelte';
