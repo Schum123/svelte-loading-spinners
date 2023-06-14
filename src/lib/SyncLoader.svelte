@@ -28,13 +28,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 2px;
 	}
 
 	.dot {
 		height: var(--dotSize);
 		width: var(--dotSize);
 		background-color: var(--color);
-		margin: 2px;
 		display: inline-block;
 		border-radius: 100%;
 		animation: sync var(--duration) ease-in-out infinite alternate both running;
