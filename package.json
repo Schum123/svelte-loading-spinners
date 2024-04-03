@@ -15,6 +15,9 @@
 	"keywords": [
 		"svelte"
 	],
+	"files": [
+		"dist"
+	],
 	"exports": {
 		"./package.json": "./package.json",
 		"./types/spinner.type": "./dist/types/spinner.type.js",
